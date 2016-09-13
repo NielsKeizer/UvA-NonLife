@@ -67,3 +67,46 @@ X <- rnorm(1000); Y <- rnorm(1000)
 # TODO: Uitwerken in LaTeX
 
 a <- .8; b <- sqrt(1 - a^2); Y <- a*X + b*Y
+
+# ---- Q4 ----
+cov_matrix <- matrix(c(1,a,a,1), nrow=2, ncol=2)
+
+# ---- Q5 ----
+cov_matrix
+t(chol(cov_matrix))
+# TODO: Nadenken/Uitleggen waarom de matrix getransponeerd moet worden.
+
+# ---- Q6 ----
+c(mean(X), var(X), mean(Y), var(Y), cor(X,Y)) # Gemiddelden liggen bij 0, varianties bij 1, correlatie bij 0.8. Lijkt te kloppen
+
+par(mfrow=c(1,2))
+plot(X,Y, pch="*")
+d <- -2.2
+abline(v=d, col="red")
+
+bad <- (X < d)
+plot(X[bad], Y[bad], ylim=range(Y))
+abline(v=d, col="red")
+cor(X[bad],Y[bad])
+
+# ---- Q7 ----
+# TODO: 'Show that' Uitwerken in LaTex. 
+
+chi5 <- sqrt(rchisq(1000, df=5)/5)
+X <- X/chi5; Y <- Y/chi5 
+
+# ---- Q8 ----
+c(mean(X), var(X), mean(Y), var(Y), cor(X,Y))
+
+# TODO: Show that enz. laten zien in LaTeX
+
+# ---- Q9 ----
+par(mfrow=c(1,2))
+plot(X,Y, pch="*")
+d <- -2.2
+abline(v=d, col="red")
+
+bad <- (X < d)
+plot(X[bad], Y[bad], ylim=range(Y))
+abline(v=d, col="red")
+cor(X[bad],Y[bad])
