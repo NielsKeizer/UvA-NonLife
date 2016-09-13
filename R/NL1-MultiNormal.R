@@ -110,3 +110,16 @@ bad <- (X < d)
 plot(X[bad], Y[bad], ylim=range(Y))
 abline(v=d, col="red")
 cor(X[bad],Y[bad])
+
+# ---- Q10 ----
+rm(list=ls(all=TRUE))
+library(MASS)
+mu <- c(1,3,5); sig2 <- c(1,2,5)
+Corrmat <- rbind(c(1., .3, .3),
+                 c(.3, 1., .4),
+                 c(.3, .4, 1.))
+Varmat <- Corrmat * sqrt(sig2 %*% t(sig2))
+Z <- mvrnorm(100, mu, Varmat)
+options(digits=7)
+colMeans(Z); diag(cov(Z)); cor(Z)
+
