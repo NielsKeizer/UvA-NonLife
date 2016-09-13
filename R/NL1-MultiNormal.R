@@ -8,7 +8,8 @@ set.seed(1); nor <- qnorm(runif(5))
 set.seed(1); nor1 <- rnorm(3)
 nor; nor1; nor[c(1,3,5)] - nor1
 
-# Q1
+# ---- Q1 ----
+
 set.seed(1)
 sum(duplicated(runif(1e6))) ## = 120
 sum(duplicated(rnorm(1e8))) ## = 0
@@ -26,3 +27,31 @@ num_dup_norm ## = (5, 0.5, 0.05, 0.005)
 # The outcome is consistent with a resolution of 10^17 or higher.
 
 #TODO - Derivation for formula when using binomial expansion
+
+# ---- Example: Brownian Motion ----
+rm(list=ls(all=TRUE))
+
+par(mfrow=c(1,2),lwd=2,bty="n")
+set.seed(3); y <- c(0,cumsum(rnorm(800)))/10
+plot(exp(y), col = "blue", type="l", ylab="", lwd=2, main="Geometric Brownian Motion")
+set.seed(4); y <- c(0,cumsum(rnorm(800)))/10
+lines(exp(y), col="forestgreen", lwd="2")
+set.seed(5); y <- c(0,cumsum(rnorm(800)))/10
+lines(exp(y), col="red")
+
+n <- 50; set.seed(9)
+x <- cumsum(c(0,rnorm(n))); y <- cumsum(c(0,rnorm(n)))
+plot(x, y, type="n", xlab="", ylab="", main="2-dimensional Brownian Motion")
+arrows(x[1:n], y[1:n], x[1+(1:n)], y[1+(1:n)], col=rainbow(n), lwd=2, length=.08)
+points(0,0,col="red",cex=1.5,lwd=3)
+points(x[n+1], y[n+1], col="red", cex=1.5,lwd=3)
+
+# ---- Q2 ----
+# The probability of moving from state i to stat i+1 is equal to p.
+# The probability of moving from state i to stat i-1 is equal to 1-p.
+# The probability of moving to any other state is equal to 0.
+rm(list=ls(all=TRUE))
+
+n <- 200; p <- 0.52
+x <- c(0,cumsum(2*rbinom(n,1,p)-1))
+plot(x, type="l", lwd=1, ylab="state", xlab="step", main="1-dimensional random walk")
