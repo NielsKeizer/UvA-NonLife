@@ -55,3 +55,15 @@ rm(list=ls(all=TRUE))
 n <- 200; p <- 0.52
 x <- c(0,cumsum(2*rbinom(n,1,p)-1))
 plot(x, type="l", lwd=1, ylab="state", xlab="step", main="1-dimensional random walk")
+
+# ---- Q3 ----
+rm(list=ls(all=TRUE))
+
+set.seed(2004); options(digits=2)
+X <- rnorm(1000); Y <- rnorm(1000)
+
+# Var[Y*] = 1 implies that a^2 + b^2 = 1
+# r(X,Y*) = 0.8 implies that a = 0.8
+# TODO: Uitwerken in LaTeX
+
+a <- .8; b <- sqrt(1 - a^2); Y <- a*X + b*Y
