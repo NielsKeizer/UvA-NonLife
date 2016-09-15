@@ -1,0 +1,64 @@
+\documentclass[11pt]{article}
+
+\usepackage[english]{babel}                 %% hyphenation rules, spell-checker
+\usepackage{amsmath}                        %% macros like align* and pmatrix
+\usepackage{graphicx,epstopdf}              %% for .eps graphs
+\usepackage[official]{eurosym}              %% 1 \euro
+\usepackage[a4paper,margin=2cm]{geometry}   %% margins
+
+\frenchspacing                              %% no extra space after period
+\addtolength{\parskip}{0.5\baselineskip}    %% some white space between paragraphs
+\setlength{\parindent}{0pt}                 %% but no indentation
+\renewcommand{\baselinestretch}{1.1}        %% line spacing of TeX is small
+
+\title{Non-life --- Assignment NL1}  %% don't forget to change!
+
+\author{
+  Niels Keizer\footnote{Student number: 10910492}
+  \quad and \quad
+  Robert Jan Sopers\footnote{Student number: 99999999}
+}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\subsection*{Question 1}
+
+The power of \LaTeX~lies in easy and beautiful typesetting of complicated formulas like
+\[
+   \sum_{n=0}^\infty x^n = \frac{1}{1-x},
+\]
+or
+\[
+   \int_{-\pi}^{\pi} \sin \left(\frac{x}{2}+\pi\right) \text{d}x = 0,
+\]
+or
+\[
+  \begin{pmatrix}
+    1 & 2 & 3 \\ %% \\ denotes `next row/line'; & denotes `next column'
+    4 & 5 & 6
+  \end{pmatrix}
+  \begin{pmatrix}
+    1 \\ 1 \\ 1
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    6 \\ 15
+  \end{pmatrix}.
+\]
+
+In an \verb!align*! environment (included in package \verb!amsmath!) the characters following the tab-sign \& are aligned:
+\begin{align*}
+  ( 1 - x ) ( 1 + x + x^2 + \ldots + x^n )
+  & = 
+  1 - x + x - x^2 + x^2 - \ldots + x^n - x^{n+1}
+  \\ %% denotes `next line'
+  & =
+  1 - x^{n+1}.
+\end{align*}
+
+
+\end{document}
