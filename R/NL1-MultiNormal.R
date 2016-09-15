@@ -141,3 +141,30 @@ cbind(mean=mean(VaR),stdev=sd(VaR))
 # 22.3 appears to be a good estimate
 
 #TODO: compute theoretical value in LaTeX
+
+# ---- Q12 ----
+rm(list=ls(all=TRUE))
+
+n <- 1e6
+mu <- c(0,0,0)
+sigma <- rbind(c(1,1/6,1/6),
+               c(1/6,1,1/6),
+               c(1/6,1/6,1))
+Z <- mvrnorm(n, mu,sigma)
+
+# ---- Q13 ----
+V <- rowSums(Z)
+
+# ---- Q14 ----
+d <- quantile(V,0.975)
+
+# ---- Q15 ----
+stoploss_premium <- mean(pmax(V-d,0)) 
+
+# ---- Q16 ----
+# TODO: In LaTeX uitwerken dat de resulterende verdeling ook normaal is, vervolgens mu en sd bepalen.
+
+# ---- Q17 ----
+# Uit vraag 16 blijkt dat mu = 0 en sigma = 2.
+mean <- sum(mu); sd <- sqrt(sum(sigma)); d_new <- qnorm(0.975, mean, sd)
+stoploss_premium_mart <- sd * dnorm((d_new - mean)/sd) - (d_new - mean)*(1 - pnorm((d_new - mean)/sd))
