@@ -123,3 +123,21 @@ Z <- mvrnorm(100, mu, Varmat)
 options(digits=7)
 colMeans(Z); diag(cov(Z)); cor(Z)
 
+# TODO: Find out what he means byverifying something he calculated himself.
+
+#colMeans(Z) estimates the mean of each column. Therefore colMeans should be close to the mean vector mu.
+#diag(cov(Z)) gives the diagonal elements of the covariance matrix. The diagonal elements of the covariance matrix contains the estimated variance of each element of Z. This should be close to sig2.
+#cor(z) contains the estimated correlation between the three elements of Z.
+
+# ---- Q11 ----
+no_sims = 1e6
+VaR <- rep(0,10)
+for (i in (1:10)){
+  Z <- mvrnorm(no_sims, mu, Varmat)
+  VaR[i] <- quantile(rowSums(Z),0.9999)
+}
+VaR
+cbind(mean=mean(VaR),stdev=sd(VaR))
+# 22.3 appears to be a good estimate
+
+#TODO: compute theoretical value in LaTeX
