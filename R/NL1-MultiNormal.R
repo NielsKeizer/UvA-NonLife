@@ -168,3 +168,22 @@ stoploss_premium <- mean(pmax(V-d,0))
 # Uit vraag 16 blijkt dat mu = 0 en sigma = 2.
 mean <- sum(mu); sd <- sqrt(sum(sigma)); d_new <- qnorm(0.975, mean, sd)
 stoploss_premium_mart <- sd * dnorm((d_new - mean)/sd) - (d_new - mean)*(1 - pnorm((d_new - mean)/sd))
+
+# ---- Q18 ----
+rm(list=ls(all=TRUE))
+
+n <- 1e6
+k <- 5
+mu <- c(0,0,0)
+sigma <- rbind(c(1,1/6,1/6),
+               c(1/6,1,1/6),
+               c(1/6,1/6,1))
+Z <- mvrnorm(n, mu,sigma)
+chi5 <- sqrt(rchisq(n, df=5)/5)
+Z_prime <- Z/chi5
+V_prime <- rowSums(Z_prime)
+d <- quantile(V_prime,0.975)
+stoploss_premium <- mean(pmax(V_prime-d,0)) 
+
+# ---- Q19 ----
+#TODO: Nog helemaal uitwerken.
