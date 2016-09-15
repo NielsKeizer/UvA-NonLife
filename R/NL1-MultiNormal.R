@@ -26,7 +26,7 @@ num_dup_norm <- n_norm^2/(2*m_norm)
 num_dup_norm ## = (5, 0.5, 0.05, 0.005)
 # The outcome is consistent with a resolution of 10^17 or higher.
 
-#TODO - Derivation for formula when using binomial expansion
+#Done - Derivation for formula when using binomial expansion
 
 # ---- Example: Brownian Motion ----
 rm(list=ls(all=TRUE))

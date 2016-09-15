@@ -28,7 +28,7 @@
 
 \section*{Generating multinormal and multi-student r.v.'s}
 
-\subsection*{Question 1}
+\subsection*{Q1}
 
 First we run the following script:
 
@@ -88,4 +88,16 @@ Next we check in \verb|R| if the number of duplicates is consistent with values 
 
 The obtained result seems to be consistent with a resolution of $10^{16}$ or higher.
  
+\subsection*{Q2}
+The following code is executed in \verb|R|.
+\begin{verbatim}
+> n <- 200; p <- 0.52
+> x <- c(0,cumsum(2*rbinom(n,1,p)-1))
+> plot(x, type="l", lwd=1, ylab="state", xlab="step", main="1-dimensional random walk")
+\end{verbatim}
+This gives the following biased random walk:
+
+\includegraphics[scale=.6]{NL1_Q2_1D-randomwalk.eps} 
+
+
 \end{document}
