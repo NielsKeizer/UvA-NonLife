@@ -76,11 +76,11 @@ This gives the following biased random walk:
 Given that $X$, $Y \sim N(0,1)$, we want to transform $(X, Y)$ into $(X, Y^*)$, with $Y^* = aX + bY$, with $a, b$ chosen in such a way that $\Var[Y^*] = 1$ and $r(X, Y^*) = 0.8$.
 
 \begin{align*}
-r(X, Y^*) & = \frac{\E[X Y^*] - \E[X] \E[Y*]}{\sqrt{\Var[X] \Var[Y^*]}} = \frac{\E[a X^2 + b X Y] - 0*\E[Y*]}{\sqrt{1 * 1}} \\
+r(X, Y^*) & = \frac{\E[X Y^*] - \E[X] \E[Y*]}{\sqrt{\Var[X] \Var[Y^*]}} = \frac{\E[a X^2 + b X Y] - 0 \cdot \E[Y^*]}{\sqrt{1 * 1}} \\
           & = a * \E[X^2] + b * \E[X Y] = a (\Var[X] - \E[X]^2) = a
 \end{align*}
 
-Here we use that $\E[X] = 0$, $\Var[X] = \Var[Y] = \Var[Y^*] = 1$. Also $\E[X Y] = 0$, because $X$ and $Y$ are independent.
+Here we use that $\E[X] = 0$, $\Var[X] = \Var[Y] = \Var[Y^*] = 1$. Also $\E[X Y] = \E[X] \E[]Y] = 0$, because $X$ and $Y$ are independent.
 Next we use the condition that the variance of $Y^*$ must also be 1.
 
 \begin{displaymath}
@@ -157,3 +157,28 @@ We execute the following \verb|R| code.
 \end{verbatim}
 
 The means of $X$ and $Y^*$ are close to $0$. The variances close to $1$ and the correlation is close to $0.8$. This resembles the theoretical values quite close.
+
+\subsection*{Q7}
+Let $(X, Y)$ be bivariate Normal with $\E[X] = \E[Y] = 0$, $\Var[X] = \Var[Y] = 1$ and $r(X,Y) = r$. $W$ is independent of $(X, Y)$. Then
+
+\begin{align*}
+r(XW, YW) & = \frac{\E[XWYW] - \E[XW]\E[YW]}{\sqrt{\Var[XW] \Var[YW]}} \\
+	      & = \frac{\E[W^2]\E[XY] - \E[W]^2\E[X]\E[Y]}{\sqrt{\left(\E[W^2]\E[X^2] - \E[W]^2\E[X]^2\right)\left(\E[W^2]\E[Y^2] - \E[W]^2\E[Y]^2\right)}} \\
+	      & = \frac{\E[W]^2\E[XY] - 0}{\sqrt{\left(\E[W^2]\E[X^2] - 0\right)\left(\E[W^2]\E[Y^2] - 0\right)}} \\ 
+	      & = \frac{\E[W^2]}{\sqrt{\E[W^2]^2}} \frac{\E[XY]}{\Var[X]\Var[Y]} = r \cdot \frac{\E[W^2]}{\sqrt{\E[W^2]^2}} = r
+\end{align*}
+
+When $\E[W^2]$ is finite, the final step in the derivation is allowed. This is equivalent with demanding $\Var[W]$ to be finite.
+
+\subsection*{Q8}
+
+Next, we execute the following \verb|R| code.
+
+\begin{verbatim}
+> chi5 <- sqrt(rchisq(1000, df=5)/5)
+> X <- X/chi5; Y <- Y/chi5 
+> c(mean(X), var(X), mean(Y), var(Y), cor(X,Y))
+[1] 0.038 1.525 0.068 1.528 0.786
+\end{verbatim}
+
+We take $X$ and $Y*$ as defined earlier. $V \sim \Chi^2_k$ and $W = \sqrt{k/V}$ with $k=5$.  The population mean of $XW$ is $0$ because $\E[XW] = \E[X]\E[W] = 0$. The same holds for $Y^{*}W$. $r(XW,Y^{*}W) = 0.8$ has been proven in question $7$.
