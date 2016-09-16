@@ -26,7 +26,7 @@ num_dup_norm <- n_norm^2/(2*m_norm)
 num_dup_norm ## = (5, 0.5, 0.05, 0.005)
 # The outcome is consistent with a resolution of 10^17 or higher.
 
-#TODO - Derivation for formula when using binomial expansion
+#Done - Derivation for formula when using binomial expansion
 
 # ---- Example: Brownian Motion ----
 rm(list=ls(all=TRUE))
@@ -74,7 +74,6 @@ cov_matrix <- matrix(c(1,a,a,1), nrow=2, ncol=2)
 # ---- Q5 ----
 cov_matrix
 t(chol(cov_matrix))
-# TODO: Nadenken/Uitleggen waarom de matrix getransponeerd moet worden.
 
 # ---- Q6 ----
 c(mean(X), var(X), mean(Y), var(Y), cor(X,Y)) # Gemiddelden liggen bij 0, varianties bij 1, correlatie bij 0.8. Lijkt te kloppen
@@ -123,3 +122,67 @@ Z <- mvrnorm(100, mu, Varmat)
 options(digits=7)
 colMeans(Z); diag(cov(Z)); cor(Z)
 
+# TODO: Find out what he means byverifying something he calculated himself.
+
+#colMeans(Z) estimates the mean of each column. Therefore colMeans should be close to the mean vector mu.
+#diag(cov(Z)) gives the diagonal elements of the covariance matrix. The diagonal elements of the covariance matrix contains the estimated variance of each element of Z. This should be close to sig2.
+#cor(z) contains the estimated correlation between the three elements of Z.
+
+# ---- Q11 ----
+no_sims = 1e6
+VaR <- rep(0,10)
+for (i in (1:10)){
+  Z <- mvrnorm(no_sims, mu, Varmat)
+  VaR[i] <- quantile(rowSums(Z),0.9999)
+}
+VaR
+cbind(mean=mean(VaR),stdev=sd(VaR))
+# 22.3 appears to be a good estimate
+
+#TODO: compute theoretical value in LaTeX
+
+# ---- Q12 ----
+rm(list=ls(all=TRUE))
+
+n <- 1e6
+mu <- c(0,0,0)
+sigma <- rbind(c(1,1/6,1/6),
+               c(1/6,1,1/6),
+               c(1/6,1/6,1))
+Z <- mvrnorm(n, mu,sigma)
+
+# ---- Q13 ----
+V <- rowSums(Z)
+
+# ---- Q14 ----
+d <- quantile(V,0.975)
+
+# ---- Q15 ----
+stoploss_premium <- mean(pmax(V-d,0)) 
+
+# ---- Q16 ----
+# TODO: In LaTeX uitwerken dat de resulterende verdeling ook normaal is, vervolgens mu en sd bepalen.
+
+# ---- Q17 ----
+# Uit vraag 16 blijkt dat mu = 0 en sigma = 2.
+mean <- sum(mu); sd <- sqrt(sum(sigma)); d_new <- qnorm(0.975, mean, sd)
+stoploss_premium_mart <- sd * dnorm((d_new - mean)/sd) - (d_new - mean)*(1 - pnorm((d_new - mean)/sd))
+
+# ---- Q18 ----
+rm(list=ls(all=TRUE))
+
+n <- 1e6
+k <- 5
+mu <- c(0,0,0)
+sigma <- rbind(c(1,1/6,1/6),
+               c(1/6,1,1/6),
+               c(1/6,1/6,1))
+Z <- mvrnorm(n, mu,sigma)
+chi5 <- sqrt(rchisq(n, df=5)/5)
+Z_prime <- Z/chi5
+V_prime <- rowSums(Z_prime)
+d <- quantile(V_prime,0.975)
+stoploss_premium <- mean(pmax(V_prime-d,0)) 
+
+# ---- Q19 ----
+#TODO: Nog helemaal uitwerken.
