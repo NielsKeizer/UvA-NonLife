@@ -74,7 +74,6 @@ cov_matrix <- matrix(c(1,a,a,1), nrow=2, ncol=2)
 # ---- Q5 ----
 cov_matrix
 t(chol(cov_matrix))
-# TODO: Nadenken/Uitleggen waarom de matrix getransponeerd moet worden.
 
 # ---- Q6 ----
 c(mean(X), var(X), mean(Y), var(Y), cor(X,Y)) # Gemiddelden liggen bij 0, varianties bij 1, correlatie bij 0.8. Lijkt te kloppen

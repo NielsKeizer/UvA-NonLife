@@ -73,7 +73,7 @@ This gives the following biased random walk:
 
 \subsection*{Q3}
 
-Given that $X$, $Y$ \sim $N(0,1)$, we want to transform $(X, Y)$ into $(X, Y^*)$, with $Y^* = aX + bY$, with $a, b$ chosen in such a way that $\Var[Y^*] = 1$ and $r(X, Y^*) = 0.8$.
+Given that $X$, $Y \sim N(0,1)$, we want to transform $(X, Y)$ into $(X, Y^*)$, with $Y^* = aX + bY$, with $a, b$ chosen in such a way that $\Var[Y^*] = 1$ and $r(X, Y^*) = 0.8$.
 
 \begin{align*}
 r(X, Y^*) & = \frac{\E[X Y^*] - \E[X] \E[Y*]}{\sqrt{\Var[X] \Var[Y^*]}} = \frac{\E[a X^2 + b X Y] - 0*\E[Y*]}{\sqrt{1 * 1}} \\
@@ -92,6 +92,8 @@ We can conclude from this that $a = 0.8$ and $b = \sqrt{1 - a^2} = 0.6$.
 In \verb|R| code:
 
 \begin{verbatim}
+set.seed(2004); options(digits=2)
+X <- rnorm(1000); Y <- rnorm(1000)
 a <- .8; b <- sqrt(1 - a^2); Y <- a*X + b*Y
 \end{verbatim}
 
@@ -146,3 +148,12 @@ a & 1
 \end{pmatrix}
 = \Sigma
 \end{displaymath}
+
+\subsection*{Q6}
+We execute the following \verb|R| code.
+\begin{verbatim}
+> c(mean(X), var(X), mean(Y), var(Y), cor(X,Y))
+[1] 0.051 0.983 0.070 0.994 0.796
+\end{verbatim}
+
+The means of $X$ and $Y^*$ are close to $0$. The variances close to $1$ and the correlation is close to $0.8$. This resembles the theoretical values quite close.
