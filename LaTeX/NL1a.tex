@@ -33,7 +33,7 @@ We run the following script:
 
 The expected result of 116.4 is quite close to the generated result. The outcome of 120 is therefore consistent with the assumption that \verb|runif| produces different values uniformly.
 
-The resolution of \verb|rnorm| is somewhere in the $2^50$'s. Directly calculating $1 - f^n$ will give $1$, because f is so close to $1$.
+The resolution of \verb|rnorm| is somewhere in the $2^{50}$'s. Directly calculating $1 - f^n$ will give $1$, because f is so close to $1$.
 First, we use to approximation given in the assignment.
 \begin{displaymath}
 f^n = \left( 1 - \frac{1}{m}\right)^n \approx 1 - \frac{n}{m} + \frac{n^2}{2m^2}
@@ -70,3 +70,79 @@ The following code is executed in \verb|R|.
 This gives the following biased random walk:
 
 \includegraphics[scale=.6]{NL1_Q2_1D-randomwalk.eps} 
+
+\subsection*{Q3}
+
+Given that $X$, $Y$ \sim $N(0,1)$, we want to transform $(X, Y)$ into $(X, Y^*)$, with $Y^* = aX + bY$, with $a, b$ chosen in such a way that $\Var[Y^*] = 1$ and $r(X, Y^*) = 0.8$.
+
+\begin{align*}
+r(X, Y^*) & = \frac{\E[X Y^*] - \E[X] \E[Y*]}{\sqrt{\Var[X] \Var[Y^*]}} = \frac{\E[a X^2 + b X Y] - 0*\E[Y*]}{\sqrt{1 * 1}} \\
+          & = a * \E[X^2] + b * \E[X Y] = a (\Var[X] - \E[X]^2) = a
+\end{align*}
+
+Here we use that $\E[X] = 0$, $\Var[X] = \Var[Y] = \Var[Y^*] = 1$. Also $\E[X Y] = 0$, because $X$ and $Y$ are independent.
+Next we use the condition that the variance of $Y^*$ must also be 1.
+
+\begin{displaymath}
+\Var[Y^*] = \Var[aX + bY] = a^2 \Var[X] + b^2 \Var[Y] + 2ab \Cov[X,Y] = a^2 + b^2 = 1
+\end{displaymath}
+
+We can conclude from this that $a = 0.8$ and $b = \sqrt{1 - a^2} = 0.6$.
+
+In \verb|R| code:
+
+\begin{verbatim}
+a <- .8; b <- sqrt(1 - a^2); Y <- a*X + b*Y
+\end{verbatim}
+
+\subsection*{Q4}
+
+The variance-covariance matrix $\Sigma$ of the random vector $(X, Y^*)$ is equal to the correlation matrix because $\Var[X] = \Var[Y^*] = 1$. It is given by the following expression.
+
+\begin{displaymath}
+\Sigma = 
+\begin{pmatrix}
+\Cov[X,X] & \Cov[X, Y^*] \\
+\Cov[Y^*,X] & \Cov[Y^*, Y^*]
+\end{pmatrix}
+=
+\begin{pmatrix}
+\Var[X] & r(X,Y^*) \\
+r(X, Y^*) & \Var[Y^*]
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 & 0.8 \\
+0.8 & 1
+\end{pmatrix}
+\end{displaymath}
+
+\subsection*{Q5}
+If $A$ is to be the Cholesky decomposition of $\Sigma$, it should be a lower triangular matrix with real and positive entries and $A A^* = \Sigma$, where $A^*$ is the conjugate transpose of $A$. Checking this gives
+
+\begin{displaymath}
+\begin{pmatrix}
+1 & 0 \\
+a & b
+\end{pmatrix}
+\begin{pmatrix}
+1 & a \\
+0 & b
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 & a \\
+a & a^2 + b^2
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 & a \\
+a & 1
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 & 0.8 \\
+0.8 & 1
+\end{pmatrix}
+= \Sigma
+\end{displaymath}
