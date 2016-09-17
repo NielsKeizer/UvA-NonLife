@@ -191,4 +191,9 @@ stoploss_premium <- mean(pmax(V_prime-d,0))
 stoploss_premium
 
 # ---- Q19 ----
-#TODO: Nog helemaal uitwerken.
+#DONE: Nog helemaal uitwerken.
+sd <- sqrt(sum(sigma))
+d_new <- sd * qt(0.975,5) 
+f <- function(x) {1 - pt(x/sd,5)}
+ES <- integrate(f, d, Inf)
+ES$value

@@ -389,3 +389,36 @@ The theoretical stoploss premium of $0.01889$ is really close to its estimated v
 > stoploss_premium
 [1] 0.04818821
 \end{verbatim}
+
+\subsection*{Q19}
+
+A univariate Student(k) distribution is found by dividing $T \sim N(0,1)$ by a r.v. $\sqrt{U/k}$, with $U \sim \chi^2_k$, independent of $T$. We define $V = X + Y + Z$. $V$ is standard normally distributed with mean $\mu = 0$ and standard deviation $\sigma = 2$. The transform to a student distribution requires $\sigma = 1$, so we need to scale $V$ by sigma. We can then conclude that  $V/(\sigma \sqrt{(U/k)})$ has a student t distribution with k degrees of freedom. We define $V' = V/\sqrt{(U/k)}$, with cumulative distribution function $F_{V'}(x)$. It then follows that
+
+\begin{displaymath}
+F_{V'}(x) = \Pr[V' \le x] = \Pr[V/\sqrt{(U/k)} \le x] = \Pr[V/(\sigma \sqrt{(U/k)}) \le x/\sigma] = F_{st}(x/\sigma;k) 
+\end{displaymath}
+
+, where $F_{st}(x/\sigma;k)$ is the cumulative distribution function of the student distribution. We can now calculate the $97.5\%$ quantile $d$ by the following derivation.
+
+\begin{displaymath}
+F_{st}(d/\sigma;k) = 0.975 \implies d = \sigma F^{-1}_{st}(0.975;k) 
+\end{displaymath}
+
+Using formula (1.33) from MART, we can then determine the equation for the expected shortfall ES.
+
+\begin{displaymath}
+ES = \int_{d}^{\infty}[1-F_{st}(x/\sigma;k)]  dx
+\end{displaymath}
+
+We use the following functions in the next bit of \verb|R| code. \verb|qt()| gives the quantiles of the student t distribution, \verb|pt| is the distribution function of the student t distribution. 
+
+\begin{verbatim}
+> sd <- sqrt(sum(sigma))
+> d_new <- sd * qt(0.975,5) 
+> f <- function(x) {1 - pt(x/sd,5)}
+> ES <- integrate(f, d_new, Inf)
+> ES$value
+[1] 0.04754977
+\end{verbatim}
+
+The theoretical value of $0.0475$ is very close to the estimated value of $0.0482$.
