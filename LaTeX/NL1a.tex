@@ -172,7 +172,25 @@ When $\E[W^2]$ is finite, the final step in the derivation is allowed. This is e
 
 \subsection*{Q8}
 
-Next, we execute the following \verb|R| code.
+We take $X$ and $Y*$ as defined earlier. $V \sim \chi^2_k$ and $W = \sqrt{k/V}$ with $k=5$.  The population mean of $XW$ is $0$ because $\E[XW] = \E[X]\E[W] = 0$. The same holds for $Y^{*}W$. $r(XW,Y^{*}W) = 0.8$ has been proven in question $7$.
+Next we determine the variance of $XW$.
+\begin{align*}
+\Var[XW] & = \E[X]^2 \Var[W] + \Var[X] \E[W]^2 + \Var[X]\Var[W] \\
+         & =  0 + \Var[X](\E[W]^2 + \Var[W]) = \Var[X]\E[W^2] \\
+         & = 1 \cdot \E[k/V] = k \E[1/V] = \frac{k}{k-2}
+\end{align*}
+
+Here we use that $\E[1/V] = 1/(k-2)$, which we will derive below,  $f_{\chi^2}(x; k)$ is the probability density function of the chi-squared distribution with $k$ degrees of freedom.
+
+\begin{align*}
+\E[1/V] & = \int_{0}^{\infty} \frac{1}{x} f_{\chi^2}(x; k) dx = \int_{0}^{\infty} \frac{1}{x} \frac{x^{\left( k/2 - 1\right) }e^{-x/2}}{2^{k/2}\Gamma(k/2)} dx = \int_{0}^{\infty} \frac{x^{\left( k/2 - 2\right) }e^{-x/2}}{2^{k/2}\Gamma(k/2)} dx \\
+        & = \int_{0}^{\infty} \frac{x^{\left(\left(k-2\right)/2 - 1\right) }e^{-x/2}}{2^{k/2}\Gamma(k/2)} dx = \int_{0}^{\infty} \frac{x^{\left(\left(k-2\right)/2 - 1\right) }e^{-x/2}}{2 \cdot 2^{\left(k-2\right)/2}\frac{k-2}{2} \Gamma(\frac{k-2}{2})} dx \\
+        & = \frac{1}{k-2} \int_{0}^{\infty} f_{\chi^2}(x; k-2) dx = \frac{1}{k-2}
+\end{align*}
+
+In the derivation, we use $\Gamma(k/2) = \Gamma(\frac{k-2}{2} + 1) = \frac{k-2}{2} \Gamma(\frac{k-2}{2})$.
+
+Now we execute the following \verb|R| code.
 
 \begin{verbatim}
 > chi5 <- sqrt(rchisq(1000, df=5)/5)
@@ -181,10 +199,4 @@ Next, we execute the following \verb|R| code.
 [1] 0.038 1.525 0.068 1.528 0.786
 \end{verbatim}
 
-We take $X$ and $Y*$ as defined earlier. $V \sim \chi^2_k$ and $W = \sqrt{k/V}$ with $k=5$.  The population mean of $XW$ is $0$ because $\E[XW] = \E[X]\E[W] = 0$. The same holds for $Y^{*}W$. $r(XW,Y^{*}W) = 0.8$ has been proven in question $7$.
-Next we determine the variance of $XW$.
-\begin{align*}
-\Var[XW] & = \E[X]^2 \Var[W] + \Var[X] \E[W]^2 + \Var[X]\Var[W] \\
-         & =  0 + \Var[X](\E[W]^2 + \Var[W]) = \Var[X]\E[W^2] \\
-         & = 1 \cdot \E[k/V] = k \E[1/V]
-\end{align*}
+We see that the means are close to $0$, as expected, the variances differ by about $0.1$ and the correlation is quite close to $0.8$.
