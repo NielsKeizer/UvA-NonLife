@@ -200,3 +200,24 @@ Now we execute the following \verb|R| code.
 \end{verbatim}
 
 We see that the means are close to $0$, as expected, the variances differ by about $0.1$ and the correlation is quite close to $0.8$.
+
+\subsection*{Q8}
+
+As instructed in an earlier example, we execute the following \verb|R| code to obtain side by side scatterplots.
+
+\begin{verbatim}
+> par(mfrow=c(1,2))
+> plot(X,Y, pch="*")
+> d <- -2.2
+> abline(v=d, col="red")
+> 
+> bad <- (X < d)
+> plot(X[bad], Y[bad], ylim=range(Y))
+> abline(v=d, col="red")
+> cor(X[bad],Y[bad])
+[1] 0.44
+\end{verbatim}
+
+\includegraphics[scale=.6]{NL1_Q9_scatterplot.eps} 
+
+We can see a tail dependence for the multiStudent distribution in the plot on the right hand side. The tail correlation of $0.44$ is lower than $0.8$, but is is a lot larger than $0$. This means that there is a tail dependence.
