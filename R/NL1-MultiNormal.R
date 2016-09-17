@@ -156,17 +156,22 @@ V <- rowSums(Z)
 
 # ---- Q14 ----
 d <- quantile(V,0.975)
+d
 
 # ---- Q15 ----
 stoploss_premium <- mean(pmax(V-d,0)) 
+stoploss_premium
 
 # ---- Q16 ----
-# TODO: In LaTeX uitwerken dat de resulterende verdeling ook normaal is, vervolgens mu en sd bepalen.
+# DONE: In LaTeX uitwerken dat de resulterende verdeling ook normaal is, vervolgens mu en sd bepalen.
+mean <- sum(mu); sd <- sqrt(sum(sigma))
+c(mean, sd)
 
 # ---- Q17 ----
 # Uit vraag 16 blijkt dat mu = 0 en sigma = 2.
-mean <- sum(mu); sd <- sqrt(sum(sigma)); d_new <- qnorm(0.975, mean, sd)
+d_new <- qnorm(0.975, mean, sd)
 stoploss_premium_mart <- sd * dnorm((d_new - mean)/sd) - (d_new - mean)*(1 - pnorm((d_new - mean)/sd))
+stoploss_premium_mart
 
 # ---- Q18 ----
 rm(list=ls(all=TRUE))

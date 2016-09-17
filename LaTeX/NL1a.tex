@@ -299,3 +299,75 @@ The right hand side of this equation is equal to the sum of the elements of cova
 \end{verbatim}
 
 The estimated value of $22.296$ is close to the theoretical value of $22.264$.
+
+\subsection*{Q12}
+
+We execute the following code in \verb|R|.
+
+\begin{verbatim}
+> n <- 1e6
+> mu <- c(0,0,0)
+> sigma <- rbind(c(1,1/6,1/6),
++                c(1/6,1,1/6),
++                c(1/6,1/6,1))
+> Z <- mvrnorm(n, mu,sigma)
+\end{verbatim}
+
+\subsection*{Q13}
+
+We execute the following code in \verb|R|.
+
+\begin{verbatim}
+> V <- rowSums(Z)
+\end{verbatim}
+
+\subsection*{Q14}
+
+We execute the following code in \verb|R|.
+
+\begin{verbatim}
+> d <- quantile(V,0.975)
+> d
+97.5% 
+3.918903 
+\end{verbatim}
+
+The estimate for the $97,5\%$ quantile of \verb|V| is $3.92$.
+
+\subsection*{Q15}
+
+We execute the following code in \verb|R|.
+
+\begin{verbatim}
+> stoploss_premium <- mean(pmax(V-d,0)) 
+> stoploss_premium
+[1] 0.01884366
+\end{verbatim}
+
+The estimated stoploss premium is $0.0188$.
+
+\subsection*{Q16}
+
+By definition, the random variables $X_i$, $Y_i$ and $Z_i$ are normally distributed. The sum of normally distributed variables is also normally ditributed, therefore $V_i$ is also normally distributed. The mean and variance of $V_i$ can be obtained in the same manner as in question 11.
+
+We run the following code in \verb|R| to obtain the mean and standard devation of $V_i$.
+
+\begin{verbatim}
+> mean <- sum(mu); sd <- sqrt(sum(sigma))
+> c(mean, sd)
+[1] 0 2
+\end{verbatim}
+
+\subsection*{Q17}
+
+First, we calculate the theoretical value of $d$, after which we use formula $(3.104)$ from MART.
+
+\begin{verbatim}
+> d_new <- qnorm(0.975, mean, sd)
+> stoploss_premium_mart <- sd * dnorm((d_new - mean)/sd) - (d_new - mean)*(1 - pnorm((d_new - mean)/sd))
+> stoploss_premium_mart
+[1] 0.01889194
+\end{verbatim}
+
+The theoretical stoploss premium of $0.01889$ is really close to its estimated value of $0.01884366$.
+
