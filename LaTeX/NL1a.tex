@@ -221,3 +221,81 @@ As instructed in an earlier example, we execute the following \verb|R| code to o
 \includegraphics[scale=.6]{NL1_Q9_scatterplot.eps} 
 
 We can see a tail dependence for the multiStudent distribution in the plot on the right hand side. The tail correlation of $0.44$ is lower than $0.8$, but is is a lot larger than $0$. This means that there is a tail dependence.
+
+\subsection*{Q10}
+
+Let $\vec{Z}$ be a correlated multinormal random vector with mean $\vec{mu}$ and covariance matrix $\Sigma$. We denote $\rho$ as the correlation matrix and we use shorthand notation $\rho(Z_i,Z_j) = \rho_{i,j}$ and $\Cov(Z_i,Z_j) = \Sigma_{i,j}$.
+
+By definition, $\rho(Z_i,Z_j) = \frac{\Cov(Z_i,Z_j)}{\sqrt{\Var[Z_i]\Var[Z_j]}}$. Using the shorthand, we derive
+
+\begin{align*}
+\Sigma_{i,j} & = \rho_{i,j} \sqrt{\Var[\vec{Z}_i]\Var[\vec{Z}]_j} \\
+             & = \rho_{i,j} \sqrt{(\Var[\vec{Z}]\Var[\vec{Z}]^{T})_{i,j}} \\
+\Sigma       & = \rho \sqrt{\Var[\vec{Z}]\Var[\vec{Z}]^{T}} \\
+             & = \rho \sqrt{\Var[\vec{Z}] \otimes \Var[\vec{Z}]}
+\end{align*}
+
+In the first step, we rewrite from index notation to vector notation as can be seen on the wikipedia page of the \href{https://en.wikipedia.org/wiki/Outer_product}{outer product}. We then drop the indexes and use that the outer product can be written as a matrix multiplication.
+
+We then execute the following code:
+
+\begin{verbatim}
+> library(MASS)
+> mu <- c(1,3,5); sig2 <- c(1,2,5)
+> Corrmat <- rbind(c(1., .3, .3),
++                  c(.3, 1., .4),
++                  c(.3, .4, 1.))
+> Varmat <- Corrmat * sqrt(sig2 %*% t(sig2))
+> Z <- mvrnorm(100, mu, Varmat)
+> options(digits=7)
+> colMeans(Z); diag(cov(Z)); cor(Z)
+[1] 0.9497085 2.8927698 4.7217666
+[1] 0.9276677 2.1010010 5.4895002
+[,1]      [,2]      [,3]
+[1,] 1.0000000 0.1696436 0.1025938
+[2,] 0.1696436 1.0000000 0.4265725
+[3,] 0.1025938 0.4265725 1.0000000
+\end{verbatim}
+
+\verb|colMeans(Z)| estimates the mean of each column. Therefore \verb|colMeans| should be close to the mean vector $\vec{\mu}$.
+\verb|diag(cov(Z))| gives the diagonal elements of the covariance matrix. The diagonal elements of the covariance matrix contains the estimated variance of each element of $Z$. This should be close to $\Var[\vec{Z}]$ (or \verb|sig2|).
+\verb|cor(Z)| contains the estimated correlation between the three elements of Z.
+
+\subsection*{Q11}
+
+We execute the following code in \verb|R|:
+
+\begin{verbatim}
+> no_sims = 1e6
+> VaR <- rep(0,10)
+> for (i in (1:10)){
++   Z <- mvrnorm(no_sims, mu, Varmat)
++   VaR[i] <- quantile(rowSums(Z),0.9999)
++ }
+> VaR
+[1] 22.34890 22.27627 22.24395 22.40076 22.29522 22.23880 22.33798 22.17733 22.32926 22.31303
+> c(mean(VaR),sd(VaR))
+[1] 22.29615014  0.06445194
+\end{verbatim}
+
+We are asked to determine the $F^{-1}_{Z}(0.9999)$, where $Z = Z_1 + Z_2 + Z_3$, with $Z_i$ as defined in question 10. Because $Z_i$ are random normally distributed, so is the sum. The mean of $Z$ is given by the following equation.
+
+\begin{displaymath}
+\E[Z] = \E[Z_1] + \E[Z_2] + \E[Z_3] = 1 + 3 + 5 = 9
+\end{displaymath}
+
+The variance is given by the following formula:
+
+\begin{displaymath}
+\Var[Z] = \Var[Z_1] + \Var[Z_2] + \Var[Z_2] + 2 (\Cov(Z_1,Z_2) + \Cov(Z_1,Z_3) + \Cov(Z_2,Z_3))
+\end{displaymath}
+
+The right hand side of this equation is equal to the sum of the elements of covariance matrix from the previous question. The theoretical value is then computed by executing the following code in R.
+
+\begin{verbatim}
+> Var_t <- qnorm(0.9999, sum(mu), sqrt(sum(Varmat)))
+> Var_t
+[1] 22.26391}
+\end{verbatim}
+
+The estimated value of $22.296$ is close to the theoretical value of $22.264$.

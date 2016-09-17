@@ -89,7 +89,7 @@ abline(v=d, col="red")
 cor(X[bad],Y[bad])
 
 # ---- Q7 ----
-# TODO: 'Show that' Uitwerken in LaTex. 
+# DONE: 'Show that' Uitwerken in LaTex. 
 
 chi5 <- sqrt(rchisq(1000, df=5)/5)
 X <- X/chi5; Y <- Y/chi5 
@@ -97,7 +97,7 @@ X <- X/chi5; Y <- Y/chi5
 # ---- Q8 ----
 c(mean(X), var(X), mean(Y), var(Y), cor(X,Y))
 
-# TODO: Show that enz. laten zien in LaTeX
+# DONE: Show that enz. laten zien in LaTeX
 
 # ---- Q9 ----
 par(mfrow=c(1,2))
@@ -136,11 +136,11 @@ for (i in (1:10)){
   VaR[i] <- quantile(rowSums(Z),0.9999)
 }
 VaR
-cbind(mean=mean(VaR),stdev=sd(VaR))
+c(mean(VaR),sd(VaR))
 # 22.3 appears to be a good estimate
 
-#TODO: compute theoretical value in LaTeX
-
+Var_t <- qnorm(0.9999, sum(mu), sqrt(sum(Varmat)))
+Var_t
 # ---- Q12 ----
 rm(list=ls(all=TRUE))
 
