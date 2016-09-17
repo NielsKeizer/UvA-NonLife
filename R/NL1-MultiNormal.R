@@ -187,6 +187,7 @@ chi5 <- sqrt(rchisq(n, df=5)/5)
 Z_prime <- Z/chi5
 V_prime <- rowSums(Z_prime)
 d <- quantile(V_prime,0.975)
+d
 stoploss_premium <- mean(pmax(V_prime-d,0)) 
 stoploss_premium
 
@@ -195,5 +196,5 @@ stoploss_premium
 sd <- sqrt(sum(sigma))
 d_new <- sd * qt(0.975,5) 
 f <- function(x) {1 - pt(x/sd,5)}
-ES <- integrate(f, d, Inf)
+ES <- integrate(f, d_new, Inf)
 ES$value
