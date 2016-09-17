@@ -371,3 +371,21 @@ First, we calculate the theoretical value of $d$, after which we use formula $(3
 
 The theoretical stoploss premium of $0.01889$ is really close to its estimated value of $0.01884366$.
 
+\subsection*{Q18}
+
+\begin{verbatim}
+> n <- 1e6
+> k <- 5
+> mu <- c(0,0,0)
+> sigma <- rbind(c(1,1/6,1/6),
++                c(1/6,1,1/6),
++                c(1/6,1/6,1))
+> Z <- mvrnorm(n, mu,sigma)
+> chi5 <- sqrt(rchisq(n, df=5)/5)
+> Z_prime <- Z/chi5
+> V_prime <- rowSums(Z_prime)
+> d <- quantile(V_prime,0.975)
+> stoploss_premium <- mean(pmax(V_prime-d,0)) 
+> stoploss_premium
+[1] 0.04818821
+\end{verbatim}
