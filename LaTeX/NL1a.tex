@@ -181,4 +181,10 @@ Next, we execute the following \verb|R| code.
 [1] 0.038 1.525 0.068 1.528 0.786
 \end{verbatim}
 
-We take $X$ and $Y*$ as defined earlier. $V \sim \Chi^2_k$ and $W = \sqrt{k/V}$ with $k=5$.  The population mean of $XW$ is $0$ because $\E[XW] = \E[X]\E[W] = 0$. The same holds for $Y^{*}W$. $r(XW,Y^{*}W) = 0.8$ has been proven in question $7$.
+We take $X$ and $Y*$ as defined earlier. $V \sim \chi^2_k$ and $W = \sqrt{k/V}$ with $k=5$.  The population mean of $XW$ is $0$ because $\E[XW] = \E[X]\E[W] = 0$. The same holds for $Y^{*}W$. $r(XW,Y^{*}W) = 0.8$ has been proven in question $7$.
+Next we determine the variance of $XW$.
+\begin{align*}
+\Var[XW] & = \E[X]^2 \Var[W] + \Var[X] \E[W]^2 + \Var[X]\Var[W] \\
+         & =  0 + \Var[X](\E[W]^2 + \Var[W]) = \Var[X]\E[W^2] \\
+         & = 1 \cdot \E[k/V] = k \E[1/V]
+\end{align*}
