@@ -25,7 +25,7 @@ so that $c^Y - 1 \sim \text{exponential}( \frac{b}{\log(c)})$. Then using the ex
 which is equal to equation (2) from the exercises with $a = 0$ so $ Y \sim \text{Gompertz}(b,c)$.
 
 \subsection*{Q2}
-If the following code is entered into Rstudio
+If the following code is entered into \verb|R|
 \begin{verbatim}
 gen.Sample <- function(n, a, b, c)
 {if (any(a<0,b<0,c<1)) stop("Invalid parameters")
@@ -209,7 +209,7 @@ and for the BIC criteria
 \begin{equation}
 BIC = -2 \log L + k \log n \approx -2 \log L + 7.6k
 \end{equation}
-where the approximation is for the current situation. For the Makeham model there are 3 paramters ($k = 3$) and for the Gompertz model there are 2 parameters ($k=2$).
+where the approximation is for the current situation. For the Makeham model there are 3 parameters ($k = 3$) and for the Gompertz model there are 2 parameters ($k=2$).
 
 Via R we compute the values for the AIC and BIC criteria in the optima for the different situations and test if the Makeham model has a smaller AIC or BIC
 \begin{verbatim}
@@ -257,7 +257,7 @@ points(x, 1-S(x, 0, 8e-5, 1.09), col="blue")
 R generates the plot as seen in Figure \ref{Figure_Question7}.
 
 \begin{center}
-\begin{figure}
+\begin{figure}[H]
 
 \includegraphics[scale=1]{Question_7_MakehamGompertz.png}
 
