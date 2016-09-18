@@ -89,7 +89,7 @@ abline(v=d, col="red")
 cor(X[bad],Y[bad])
 
 # ---- Q7 ----
-# TODO: 'Show that' Uitwerken in LaTex. 
+# DONE: 'Show that' Uitwerken in LaTex. 
 
 chi5 <- sqrt(rchisq(1000, df=5)/5)
 X <- X/chi5; Y <- Y/chi5 
@@ -97,7 +97,7 @@ X <- X/chi5; Y <- Y/chi5
 # ---- Q8 ----
 c(mean(X), var(X), mean(Y), var(Y), cor(X,Y))
 
-# TODO: Show that enz. laten zien in LaTeX
+# DONE: Show that enz. laten zien in LaTeX
 
 # ---- Q9 ----
 par(mfrow=c(1,2))
@@ -136,11 +136,11 @@ for (i in (1:10)){
   VaR[i] <- quantile(rowSums(Z),0.9999)
 }
 VaR
-cbind(mean=mean(VaR),stdev=sd(VaR))
+c(mean(VaR),sd(VaR))
 # 22.3 appears to be a good estimate
 
-#TODO: compute theoretical value in LaTeX
-
+Var_t <- qnorm(0.9999, sum(mu), sqrt(sum(Varmat)))
+Var_t
 # ---- Q12 ----
 rm(list=ls(all=TRUE))
 
@@ -156,17 +156,22 @@ V <- rowSums(Z)
 
 # ---- Q14 ----
 d <- quantile(V,0.975)
+d
 
 # ---- Q15 ----
 stoploss_premium <- mean(pmax(V-d,0)) 
+stoploss_premium
 
 # ---- Q16 ----
-# TODO: In LaTeX uitwerken dat de resulterende verdeling ook normaal is, vervolgens mu en sd bepalen.
+# DONE: In LaTeX uitwerken dat de resulterende verdeling ook normaal is, vervolgens mu en sd bepalen.
+mean <- sum(mu); sd <- sqrt(sum(sigma))
+c(mean, sd)
 
 # ---- Q17 ----
 # Uit vraag 16 blijkt dat mu = 0 en sigma = 2.
-mean <- sum(mu); sd <- sqrt(sum(sigma)); d_new <- qnorm(0.975, mean, sd)
+d_new <- qnorm(0.975, mean, sd)
 stoploss_premium_mart <- sd * dnorm((d_new - mean)/sd) - (d_new - mean)*(1 - pnorm((d_new - mean)/sd))
+stoploss_premium_mart
 
 # ---- Q18 ----
 rm(list=ls(all=TRUE))
@@ -182,7 +187,14 @@ chi5 <- sqrt(rchisq(n, df=5)/5)
 Z_prime <- Z/chi5
 V_prime <- rowSums(Z_prime)
 d <- quantile(V_prime,0.975)
+d
 stoploss_premium <- mean(pmax(V_prime-d,0)) 
+stoploss_premium
 
 # ---- Q19 ----
-#TODO: Nog helemaal uitwerken.
+#DONE: Nog helemaal uitwerken.
+sd <- sqrt(sum(sigma))
+d_new <- sd * qt(0.975,5) 
+f <- function(x) {1 - pt(x/sd,5)}
+ES <- integrate(f, d_new, Inf)
+ES$value
