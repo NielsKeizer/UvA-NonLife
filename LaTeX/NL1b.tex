@@ -77,7 +77,7 @@ The results imply that a 2\% increase in the parameter a leads to a very small p
 
 \subsection*{Q4}
 
-By using the logarithm of the likelihood function we evade the problem of limited machine precision. If we let R calculate the following lines
+By using the logarithm of the likelihood function we evade the problem of limited machine precision. If we let \verb|R| calculate the following lines
 
 \begin{verbatim}
 exp(-8300)
@@ -102,7 +102,7 @@ we obtain the answers
 [1] 4.539993e-05
 \end{verbatim}
 
-which implies that R does not have the capacity to differentiate between the numbers $\exp{(-10000)}$, $\exp{(-8300)}$ and $\exp{(-5000)}$ for example. Only if the exponent is sufficiently small R will have the ability to differentiate between the numbers and find an optimum. By passing to the logarithm of the likelihood function we circumvent this problem. 
+which implies that \verb|R| does not have the capacity to differentiate between the numbers $\exp{(-10000)}$, $\exp{(-8300)}$ and $\exp{(-5000)}$ for example. Only if the exponent is sufficiently small \verb|R| will have the ability to differentiate between the numbers and find an optimum. By passing to the logarithm of the likelihood function we circumvent this problem. 
 
 
 \subsection*{Q5}
@@ -211,7 +211,7 @@ BIC = -2 \log L + k \log n \approx -2 \log L + 7.6k
 \end{equation}
 where the approximation is for the current situation. For the Makeham model there are 3 parameters ($k = 3$) and for the Gompertz model there are 2 parameters ($k=2$).
 
-Via R we compute the values for the AIC and BIC criteria in the optima for the different situations and test if the Makeham model has a smaller AIC or BIC
+Via \verb|R| we compute the values for the AIC and BIC criteria in the optima for the different situations and test if the Makeham model has a smaller AIC or BIC
 \begin{verbatim}
 AIC.MM <- 2*oMM$value + 2 * 3;
 AIC.GM <- 2*oGM$value + 2 * 2;
@@ -245,7 +245,7 @@ As regards to AIC the Makeham model is better on both samples. As regards to the
 
 \subsection*{Q7}
 
-If the following code is submitted in R
+If the following code is submitted in \verb|R|
 
 \begin{verbatim}
 S <- function(x, a, b, c) exp(-a*x - b/log(c)*(c^x-1))
@@ -254,22 +254,20 @@ plot(x, 1-S(x, 0, 8e-5, 1.08), type="h", ylab="F(x; a,b,c)")
 lines(x, 1-S(x, 1e-3, 8e-5, 1.08), col="red")
 points(x, 1-S(x, 0, 8e-5, 1.09), col="blue")
 \end{verbatim}
-R generates the plot as seen in Figure \ref{Figure_Question7}.
+\verb|R| generates the plot as seen in Figure \ref{Figure_Question7}.
 
 \begin{center}
 \begin{figure}[H]
 
 \includegraphics[scale=1]{Question_7_MakehamGompertz.png}
 
-\caption{The bar chart describes a Gompertz distribution with b = 8e-5 and c=1.08. The red line is a 
-Makeham distribution with a=1e-3 and b,c equal to the Gompertz distribution. The blue dots represent
-the Gompertz distribution with the parameter c = 1.09.}
+\caption{The bar chart describes a Gompertz distribution with $b = 8 \cdot 10^{-5}$ and $c=1.08$. The red line is a Makeham distribution with $a=1\cdot 10^{-3}$ and $b, c$ equal to the Gompertz distribution. The blue dots represent the Gompertz distribution with the parameter $c = 1.09$.}
 \label{Figure_Question7}
 
 \end{figure}
 \end{center}
 
-The difference between the Gompertz (bars in Figure) and Makeham distribution (red line) can clearly be seen in the figure. Since Makeham also has a 'accident' part in the model the cdf shows higher probabilities at low ages. For old ages the two distribution converge and are appoximately equal. The blue dots represent a Gompertz distribution with a higher parameter $c$. The effect of increasing the $c$ paramter leads to an increase in the cdf especially for older ages.
+The difference between the Gompertz (bars in Figure) and Makeham distribution (red line) can clearly be seen in the figure. Since Makeham also has a 'accident' part in the model the cdf shows higher probabilities at low ages. For old ages the two distribution converge and are appoximately equal. The blue dots represent a Gompertz distribution with a higher parameter $c$. The effect of increasing the $c$ parameter leads to an increase in the cdf especially for older ages.
 
 
 \subsection*{Q8}
@@ -284,20 +282,19 @@ lines(x, mu(x, 1e-3, 8e-5, 1.08), col="red")
 points(x, mu(x, 0, 8e-5, 1.09), col="blue")
 \end{verbatim}
 
-the output from R is given in figure \ref{Figure_Question8}.
+the output from \verb|R| is given in figure \ref{Figure_Question8}.
 \begin{center}
-\begin{figure}
+\begin{figure}[H]
 
 \includegraphics[scale=1]{Question_8_MakehamGompertz.png}
 
-\caption{The bar chart describes the mortality rate for Gompertz' law with b = 8e-5 and c=1.08. The red line is the Makeham extension with a=1e-3 and b,c equal to the Gompertz case. The blue dots represent
-the Gompertz case with the parameter c = 1.09.}
+\caption{The bar chart describes the mortality rate for Gompertz' law with $b = 8 \cdot 10^{-5}$ and $c=1.08$. The red line is the Makeham extension with $a=10^{-3}$ and $b,c$ equal to the Gompertz case. The blue dots represent the Gompertz case with the parameter $c = 1.09$.}
 \label{Figure_Question8}
 
 \end{figure}
 \end{center}
 
-The Makeham mortality rate with $a = 1e-3$ is almost indistiguishable from the Gompertz mortality rate. Changing the paramter $c$ to 1.09 has a large impact on the mortality rate. At ages higher than 70 years old the mortality rate increases dramatically.
+The Makeham mortality rate with $a = 10^{-3}$ is almost indistinguishable from the Gompertz mortality rate. Changing the parameter $c$ to $1.09$ has a large impact on the mortality rate. At ages higher than 70 years old the mortality rate increases dramatically.
 
 
 \subsection*{Q9}
@@ -326,7 +323,7 @@ There were 22 warnings (use warnings() to see them)
 > o$par
 [1] 1.076124e-03 1.433849e-06 1.166235e+00
 \end{verbatim}
-so the ML-estimates for a,b and c are $a = 1.077e-3, b=1,433e-6$ and $c = 1.166$. \\
+so the ML-estimates for $a, b$ and $c$ are $a = 1.077 \cdot 10^{-3}, b=1,433 \cdot 10^{-6}$ and $c = 1.166$. \\
 Submitting the code
 \begin{verbatim}
 ddfs <- S(0:nages, o$par[1], o$par[2], o$par[3])
@@ -338,7 +335,7 @@ lines(1:nages, q.x[1:nages], col="blue")
 \end{verbatim}
 gives the plot in figure \ref{Figure_Question9_1}.
 \begin{center}
-\begin{figure}
+\begin{figure}[H]
 
 \includegraphics[scale=1]{Question_9_MakehamGompertz_1.png}
 
@@ -348,7 +345,7 @@ gives the plot in figure \ref{Figure_Question9_1}.
 \end{figure}
 \end{center}
 
-The Makeham fit is not valid for ages in $(0,1]$ and the expectation is that the estimation is better when $x=1$ is left out. If we run the following code in R we obtain the result without $x=1$.
+The Makeham fit is not valid for ages in $(0,1]$ and the expectation is that the estimation is better when $x=1$ is left out. If we run the following code in \verb|R| we obtain the result without $x=1$.
 \begin{verbatim}
 
 S <- function(x, a, b, c) exp(-a*x - b/log(c)*(c^x-1))
