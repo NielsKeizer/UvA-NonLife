@@ -11,13 +11,13 @@ c^Y - 1 = c^{ \log_c(1+\frac{V \log(c)}{b})} - 1 = 1+\frac{V\log(c)}{b} - 1 = \f
 and because $V \sim \text{exponential}(1)$ we have that
 
 \begin{equation}
-P[c^Y - 1 \le x ] = P[V \frac{\log(c)}{b} \le x ] = P[V \le x \frac{b}{\log{c}}] 
+\Pr[c^Y - 1 \le x ] = \Pr[V \frac{\log(c)}{b} \le x ] = \Pr[V \le x \frac{b}{\log{c}}] 
 \end{equation}
 so that $c^Y - 1 \sim \text{exponential}( \frac{b}{\log(c)})$. Then using the explicit form of the CDF of the exponential distribution we find using $Z = c^Y - 1 $
 \begin{equation}
 \begin{split}
-P[Y > x] & = P[c^Y - 1 > c^x - 1] \\ 
-		 & = P[Z > c^x - 1] = 1- P[Z \le c^x - 1]  \\
+\Pr[Y > x] & = \Pr[c^Y - 1 > c^x - 1] \\ 
+		 & = \Pr[Z > c^x - 1] = 1- \Pr[Z \le c^x - 1]  \\
 		 & = 1 - F_Z(c^x - 1) = 1 - (1-\exp(-\frac{b}{\log c} (c^x - 1))) \\
 	     & = \exp(-\frac{b}{\log c} (c^x - 1))
 \end{split}

@@ -15,9 +15,9 @@ First we run the following script:
 The function \verb|duplicated| returns a logical array where unique numbers are marked with 0 and duplicates are marked with 1 (the first occurence of the number is marked with a 0). Summming this array thus gives the total number of duplicates. The uniform distribution gives 120 duplicates in a much smaller sample size than the normal distribution, which gives 0 duplicates.
 
 In the assignment, the expected number of different numbers is derived to be 
-\begin{displaymath}
+\begin{equation}
   \E[N_n] = \frac{1 - f^n}{1-f}
-\end{displaymath}
+\end{equation}
 
 The number of duplicates is then given by 
 $n - \E[N_n]$
@@ -35,19 +35,19 @@ The expected result of 116.4 is quite close to the generated result. The outcome
 
 The resolution of \verb|rnorm| is somewhere in the $2^{50}$'s. Directly calculating $1 - f^n$ will give $1$, because f is so close to $1$.
 First, we use to approximation given in the assignment.
-\begin{displaymath}
+\begin{equation}
 f^n = \left( 1 - \frac{1}{m}\right)^n \approx 1 - \frac{n}{m} + \frac{n^2}{2m^2}
-\end{displaymath}
+\end{equation}
 
 Inserting this into our equation for the number of different numbers gives
-\begin{displaymath}
+\begin{equation}
 \frac{1 - f^n}{1-f} \approx \frac{1 - 1 + \frac{n}{m} - \frac{n^2}{2m^2}}{1- \left(1 - \frac{1}{m}\right)}  = \frac{\frac{n}{m} - \frac{n^2}{2m^2}}{\frac{1}{m}} = n - \frac{n^2}{2m}
-\end{displaymath}
+\end{equation}
 
 This results in the following equation for the expected number of duplicates.
-\begin{displaymath}
+\begin{equation}
 n - \left(n - \frac{n^2}{2m}\right) = \frac{n^2}{2m}
-\end{displaymath}
+\end{equation}
 
 Next we check in \verb|R| if the number of duplicates is consistent with values for $m$ of $10^{15}$, $10^{16}$, $10^{17}$ or $10^{18}$, when $n$ is $10^8$
 \begin{verbatim}
@@ -75,17 +75,17 @@ This gives the following biased random walk:
 
 Given that $X$, $Y \sim N(0,1)$, we want to transform $(X, Y)$ into $(X, Y^*)$, with $Y^* = aX + bY$, with $a, b$ chosen in such a way that $\Var[Y^*] = 1$ and $r(X, Y^*) = 0.8$.
 
-\begin{align*}
+\begin{align}
 r(X, Y^*) & = \frac{\E[X Y^*] - \E[X] \E[Y*]}{\sqrt{\Var[X] \Var[Y^*]}} = \frac{\E[a X^2 + b X Y] - 0 \cdot \E[Y^*]}{\sqrt{1 * 1}} \\
           & = a * \E[X^2] + b * \E[X Y] = a (\Var[X] - \E[X]^2) = a
-\end{align*}
+\end{align}
 
 Here we use that $\E[X] = 0$, $\Var[X] = \Var[Y] = \Var[Y^*] = 1$. Also $\E[X Y] = \E[X] \E[]Y] = 0$, because $X$ and $Y$ are independent.
 Next we use the condition that the variance of $Y^*$ must also be 1.
 
-\begin{displaymath}
+\begin{equation}
 \Var[Y^*] = \Var[aX + bY] = a^2 \Var[X] + b^2 \Var[Y] + 2ab \Cov[X,Y] = a^2 + b^2 = 1
-\end{displaymath}
+\end{equation}
 
 We can conclude from this that $a = 0.8$ and $b = \sqrt{1 - a^2} = 0.6$.
 
@@ -101,7 +101,7 @@ a <- .8; b <- sqrt(1 - a^2); Y <- a*X + b*Y
 
 The variance-covariance matrix $\Sigma$ of the random vector $(X, Y^*)$ is equal to the correlation matrix because $\Var[X] = \Var[Y^*] = 1$. It is given by the following expression.
 
-\begin{displaymath}
+\begin{equation}
 \Sigma = 
 \begin{pmatrix}
 \Cov[X,X] & \Cov[X, Y^*] \\
@@ -117,12 +117,12 @@ r(X, Y^*) & \Var[Y^*]
 1 & 0.8 \\
 0.8 & 1
 \end{pmatrix}
-\end{displaymath}
+\end{equation}
 
 \subsection*{Q5}
 If $A$ is to be the Cholesky decomposition of $\Sigma$, it should be a lower triangular matrix with real and positive entries and $A A^* = \Sigma$, where $A^*$ is the conjugate transpose of $A$. Checking this gives
 
-\begin{displaymath}
+\begin{equation}
 \begin{pmatrix}
 1 & 0 \\
 a & b
@@ -147,7 +147,7 @@ a & 1
 0.8 & 1
 \end{pmatrix}
 = \Sigma
-\end{displaymath}
+\end{equation}
 
 \subsection*{Q6}
 We execute the following \verb|R| code.
@@ -161,12 +161,12 @@ The means of $X$ and $Y^*$ are close to $0$. The variances close to $1$ and the 
 \subsection*{Q7}
 Let $(X, Y)$ be bivariate Normal with $\E[X] = \E[Y] = 0$, $\Var[X] = \Var[Y] = 1$ and $r(X,Y) = r$. $W$ is independent of $(X, Y)$. Then
 
-\begin{align*}
+\begin{align}
 r(XW, YW) & = \frac{\E[XWYW] - \E[XW]\E[YW]}{\sqrt{\Var[XW] \Var[YW]}} \\
 	      & = \frac{\E[W^2]\E[XY] - \E[W]^2\E[X]\E[Y]}{\sqrt{\left(\E[W^2]\E[X^2] - \E[W]^2\E[X]^2\right)\left(\E[W^2]\E[Y^2] - \E[W]^2\E[Y]^2\right)}} \\
 	      & = \frac{\E[W]^2\E[XY] - 0}{\sqrt{\left(\E[W^2]\E[X^2] - 0\right)\left(\E[W^2]\E[Y^2] - 0\right)}} \\ 
 	      & = \frac{\E[W^2]}{\sqrt{\E[W^2]^2}} \frac{\E[XY]}{\Var[X]\Var[Y]} = r \cdot \frac{\E[W^2]}{\sqrt{\E[W^2]^2}} = r
-\end{align*}
+\end{align}
 
 When $\E[W^2]$ is finite, the final step in the derivation is allowed. This is equivalent with demanding $\Var[W]$ to be finite.
 
@@ -174,19 +174,19 @@ When $\E[W^2]$ is finite, the final step in the derivation is allowed. This is e
 
 We take $X$ and $Y^*$ as defined earlier. $V \sim \chi^2_k$ and $W = \sqrt{k/V}$ with $k=5$.  The population mean of $XW$ is $0$ because $\E[XW] = \E[X]\E[W] = 0$. The same holds for $Y^{*}W$. $r(XW,Y^{*}W) = 0.8$ has been proven in question $7$.
 Next we determine the variance of $XW$.
-\begin{align*}
+\begin{align}
 \Var[XW] & = \E[X]^2 \Var[W] + \Var[X] \E[W]^2 + \Var[X]\Var[W] \\
          & =  0 + \Var[X](\E[W]^2 + \Var[W]) = \Var[X]\E[W^2] \\
          & = 1 \cdot \E[k/V] = k \E[1/V] = \frac{k}{k-2}
-\end{align*}
+\end{align}
 
 Here we use that $\E[1/V] = 1/(k-2)$, which we will derive below. We use that $f_{\chi^2}(x; k)$ is the probability density function of the chi-squared distribution with $k$ degrees of freedom.
 
-\begin{align*}
+\begin{align}
 \E[1/V] & = \int_{0}^{\infty} \frac{1}{x} f_{\chi^2}(x; k) dx = \int_{0}^{\infty} \frac{1}{x} \frac{x^{\left( k/2 - 1\right) }e^{-x/2}}{2^{k/2}\Gamma(k/2)} dx = \int_{0}^{\infty} \frac{x^{\left( k/2 - 2\right) }e^{-x/2}}{2^{k/2}\Gamma(k/2)} dx \\
         & = \int_{0}^{\infty} \frac{x^{\left(\left(k-2\right)/2 - 1\right) }e^{-x/2}}{2^{k/2}\Gamma(k/2)} dx = \int_{0}^{\infty} \frac{x^{\left(\left(k-2\right)/2 - 1\right) }e^{-x/2}}{2 \cdot 2^{\left(k-2\right)/2}\frac{k-2}{2} \Gamma(\frac{k-2}{2})} dx \\
         & = \frac{1}{k-2} \int_{0}^{\infty} f_{\chi^2}(x; k-2) dx = \frac{1}{k-2}
-\end{align*}
+\end{align}
 
 In the derivation, we use $\Gamma(k/2) = \Gamma(\frac{k-2}{2} + 1) = \frac{k-2}{2} \Gamma(\frac{k-2}{2})$.
 
@@ -228,12 +228,12 @@ Let $\vec{Z}$ be a correlated multinormal random vector with mean $\vec{\mu}$ an
 
 By definition, $\rho(Z_i,Z_j) = \frac{\Cov(Z_i,Z_j)}{\sqrt{\Var[Z_i]\Var[Z_j]}}$. Using the shorthand, we derive $\Sigma$ to be.
 
-\begin{align*}
+\begin{align}
 \Sigma_{i,j} & = \rho_{i,j} \sqrt{\Var[\vec{Z}_i]\Var[\vec{Z}]_j} \\
              & = \rho_{i,j} \sqrt{(\Var[\vec{Z}]\Var[\vec{Z}]^{T})_{i,j}} \\
 \Sigma       & = \rho \sqrt{\Var[\vec{Z}]\Var[\vec{Z}]^{T}} \\
              & = \rho \sqrt{\Var[\vec{Z}] \otimes \Var[\vec{Z}]}
-\end{align*}
+\end{align}
 
 In the first step, we rewrite from index notation to vector notation as can be seen on the wikipedia page of the \href{https://en.wikipedia.org/wiki/Outer_product}{outer product}. We then drop the indexes and use that the outer product can be written as a matrix multiplication of a vector and its own transpose.
 
@@ -280,15 +280,15 @@ We execute the following code in \verb|R|:
 
 We are asked to determine the $F^{-1}_{Z}(0.9999)$, where $Z = Z_1 + Z_2 + Z_3$, with $Z_i$ as defined in question 10. Because $Z_i$ are random normally distributed, so is the sum $Z$. The mean of $Z$ is given by the following equation.
 
-\begin{displaymath}
+\begin{equation}
 \E[Z] = \E[Z_1] + \E[Z_2] + \E[Z_3] = 1 + 3 + 5 = 9
-\end{displaymath}
+\end{equation}
 
 The variance is given by the following formula:
 
-\begin{displaymath}
+\begin{equation}
 \Var[Z] = \Var[Z_1] + \Var[Z_2] + \Var[Z_2] + 2 (\Cov(Z_1,Z_2) + \Cov(Z_1,Z_3) + \Cov(Z_2,Z_3))
-\end{displaymath}
+\end{equation}
 
 The right hand side of this equation is equal to the sum of the elements of covariance matrix from the previous question. The theoretical value is then computed by executing the following code in R.
 
@@ -401,21 +401,21 @@ We estimate the expected shortfall $ES = 0.0481$.
 
 A univariate Student(k) distribution is found by dividing $T \sim N(0,1)$ by a r.v. $\sqrt{U/k}$, with $U \sim \chi^2_k$, independent of $T$. We define $V = X + Y + Z$. $V$ is standard normally distributed with mean $\mu = 0$ and standard deviation $\sigma = 2$. The transform to a student distribution requires $\sigma = 1$, so we need to scale $V$ by sigma. We can then conclude that  $V/(\sigma \sqrt{(U/k)})$ has a student t distribution with k degrees of freedom. We define $V' = V/\sqrt{(U/k)}$, with cumulative distribution function $F_{V'}(x)$. It then follows that
 
-\begin{displaymath}
+\begin{equation}
 F_{V'}(x) = \Pr[V' \le x] = \Pr[V/\sqrt{(U/k)} \le x] = \Pr[V/(\sigma \sqrt{(U/k)}) \le x/\sigma] = F_{st}(x/\sigma;k) 
-\end{displaymath}
+\end{equation}
 
 , where $F_{st}(x/\sigma;k)$ is the cumulative distribution function of the student distribution. We can now calculate the $97.5\%$ quantile $d$ by the following derivation.
 
-\begin{displaymath}
+\begin{equation}
 F_{st}(d/\sigma;k) = 0.975 \implies d = \sigma F^{-1}_{st}(0.975;k) 
-\end{displaymath}
+\end{equation}
 
 Using formula (1.33) from MART, we can then determine the equation for the expected shortfall ES.
 
-\begin{displaymath}
+\begin{equation}
 ES = \int_{d}^{\infty}[1-F_{st}(x/\sigma;k)]  dx
-\end{displaymath}
+\end{equation}
 
 We use the following functions in the next bit of \verb|R| code. \verb|qt()| gives the quantiles of the student t distribution, \verb|pt| is the distribution function of the student t distribution. 
 
