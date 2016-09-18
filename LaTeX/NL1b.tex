@@ -381,5 +381,38 @@ with the following output
 [1] 0.0004726379 0.0000246149 1.1095517146
 \end{verbatim}
 
+and the plot in figure \ref{Figure_Question9_2}.
 
+\begin{center}
+\begin{figure}
+
+\includegraphics[scale=1]{Question_9_MakehamGompertz_2.png}
+
+\caption{Plot of the ML estimate (blue line), the fractions $D_x/e_x$ and ML estimate without $x=1$ (red line)}
+\label{Figure_Question9_2}
+
+\end{figure}
+\end{center}
+Clearly the fit without $x=1$ is better (red line in figure) for high ages.
+
+To investigate the 'accident hump' we plot \verb+q.x[1:60]+ (with and without $x=1$) and \verb+(D.x/e.x)[1:60]+. Submitting the following code
+
+\begin{verbatim}
+nages <- 60
+plot(1:nages,D.x[1:nages]/e.x[1:nages],type="p",
+     main="Optimally estimated qx & fractions Dx/ex",xlab="age",ylab="q_x")
+lines(1:nages, q.x[1:nages], col="blue")
+lines(1:nages, q2.x[1:nages], col="red")
+\end{verbatim}
+
+gives the plot shown in figure \ref{Figure_Question9_3}.
+\begin{center}
+\begin{figure}
+\includegraphics[scale=1]{Question_9_MakehamGompertz_3.png}
+\caption{Plot of the ML estimate (blue line), the fractions $D_x/e_x$ and ML estimate without $x=1$ (red line) for $ x \in [0,60]$.}
+\label{Figure_Question9_3}
+\end{figure}
+\end{center}		
+
+The figure clearly shows the accident hump at $x=20$. 
 
