@@ -52,3 +52,21 @@ phi
 # The overdispersion factor phi is not vary stable and usually larger than 1. This is because the sample is to small for the dispersion factor to converge to its theoretical value.
 
 # Q2 ---- Einde
+
+# Maak tabellen voor inzichtelijkheid data
+table(list(nCl=y,gender=sx))
+table(list(nCl=y,gender.region=sx:re))
+
+# Aggregeer over de verschillende risico factor.
+aggr <- aggregate(list(Expo=mo/12,nCl=y,nPol=1), list(Jb=jb,Tp=tp,Re=re,Sx=sx), sum)
+
+aggr[sort(sample(1:54,10)),]
+
+# Q3 ---- Compute how much memory is gained by using the aggr dataframe, by doing:
+
+object.size(aggr) 
+object.size(mo) 
+object.size(y) 
+object.size(jb) + object.size(tp) + object.size(re) + object.size(sx)
+
+# Q3 ---- Einde
