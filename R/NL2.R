@@ -70,3 +70,10 @@ object.size(y)
 object.size(jb) + object.size(tp) + object.size(re) + object.size(sx)
 
 # Q3 ---- Einde
+
+# Q4 ---- What is actually the ML-estimate of \hat{\lambda_{3,3,3,2}}
+# Je deelt het aantal claims door de exposure (ipv het aantal polissen).
+aggr[54,]
+lambda3332 <- aggr$nCl[54]/aggr$Expo[54]
+lambda3332
+# Q4 ---- Einde
