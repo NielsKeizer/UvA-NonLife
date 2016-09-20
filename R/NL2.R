@@ -3,6 +3,8 @@
 # Aanwezige data verwijderen
 rm(list=ls(all=TRUE))
 
+# 1 Simulating an insurance portfolio—App. A3
+
 # Genereer data
 n.obs <- 10000; set.seed(4)
 sx <- as.factor(sample(1:2, n.obs, repl=TRUE, prob=c(6,4)))
@@ -77,3 +79,6 @@ aggr[54,]
 lambda3332 <- aggr$nCl[54]/aggr$Expo[54]
 lambda3332
 # Q4 ---- Einde
+
+# 2 Exploring the automobile portfolio of Sec. 9.5
+
