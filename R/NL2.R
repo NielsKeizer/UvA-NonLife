@@ -26,8 +26,29 @@ object.size(re.tp); rm(re.tp); rm(hh)
 for (value in c(1,2,3,4,5,6,7,8,9,10,1000,100000)){
   hh <- rep(TRUE,value)
   rr <- sample(c(TRUE,FALSE),value,repl=TRUE,prob=c(1,1))
-  print(c(value, object.size(hh), object.size(rr)))
+  af <- as.factor(rr)
+  print(c(value, object.size(hh), object.size(rr), object.size(af)))
 }
+
+rm(hh,rr,ah)
 # Q1 ---- Einde
 
+# Aantal maanden (mo) in force
+mo <- 3 * sample(1:4, n.obs, repl=TRUE, prob=c(1,1,0,8))
 
+# Stel de claim frequentie vast per 'cel'
+mu <- 0.05 * c(1,1.2)[sx] *
+             c(1,1,1)[jb] * 
+             c(1,1.2,1.44)[re] * 
+             1.2^(0:2)[tp] * mo/12 
+y <- rpois(n.obs, mu)
+table(y)
+
+# Q2 ---- Now compare mean(y) and var(y), and comment.
+cbind(mean=mean(y),variance=var(y))
+
+phi <- var(y)/mean(y)
+phi
+# The overdispersion factor phi is not vary stable and usually larger than 1. This is because the sample is to small for the dispersion factor to converge to its theoretical value.
+
+# Q2 ---- Einde
