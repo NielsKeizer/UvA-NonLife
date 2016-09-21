@@ -163,4 +163,32 @@ X[subset,] ## print a subset of its rows; all columns
 
 # Q9 ---- Einde
 
-# Q9 ---- Einde
+# Q10 ---- In this model, what is the estimated annual number of claims for someone with:
+#          a) region=1, type=1?
+#          b) the worst type/region combination?
+
+g.main <- glm(n/expo ~ region+type, quasipoisson, wei=expo)
+coef(g.main)
+
+# Q10 a)
+# If region=1 and type=1, then the indicators for region2, region3, type2 and type3 are 0. Thus we only have to calculate:
+exp(g.main$coefficients["(Intercept)"])
+
+# The first row of the dataset has region=1 and type=1, so we check against the fitted values from the glm.
+g.main$fitted.values[1]
+# Which is the same.
+
+# Q10 b)
+# Assuming all region/type combinations already exist in the model data:
+max(g.main$fitted.value)
+
+# By going through all possible combinations:
+exp(g.main$coefficients[1]+max(0,g.main$coefficients[2:3])+max(0,g.main$coefficients[4:5]))
+
+# Showing all possible combinations
+exp(g.main$coefficients[1]+matrix(c(0,g.main$coefficients[2:3]),3,3) +t(matrix(c(0,g.main$coefficients[4:5]),3,3)))
+
+# We see that the combination type=3, region=3 gives the highest estimated annual number of claims.
+
+# Q10 ---- Einde
+
