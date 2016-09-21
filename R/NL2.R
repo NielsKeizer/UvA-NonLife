@@ -96,4 +96,11 @@ expo <- 7 * expo ## each policy is in force during a 7-year period
 sex <- gl(2,27); region <- gl(3, 9, 54); type <- gl(3, 3, 54); job <- gl(3, 1, 54)
 
 # Q5 ---- Comment on the diﬀerence between:
-str(type) str(rep(1:3, each=3, len=54))
+str(type)
+str(rep(1:3, each=3, len=54))
+
+# The str function compactly displays the structure of an arbitrary R object.
+# type contains a factor object, with 3 levels (or categories), every element in the factor must be one of those 3 elements
+# rep(1:3, each=3, len=54) creates a vector of integers of three ones, three twos and three threes, repeated to a length of 54.
+
+# Q5 ---- Einde
