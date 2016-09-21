@@ -119,3 +119,19 @@ cbind(sex=sex[8],region=region[8],type=type[8],job=job[8],n=n[8],expo=expo[8])
 # We conclude that the covariates have the same value.
 
 # Q6 ---- Einde
+
+xt <- xtabs(round(1000 * n/expo) ~ sex+region+type+job)
+ftable(xt, row.vars=1:2, col.vars=3:4)
+
+anova(glm(n/expo ~ region*type, quasipoisson, wei=expo))
+
+
+# Q7 ---- Construct the analysis of deviance table when type is added before region. Are the differ-
+#         ences in deviances from adding these terms the same?
+
+anova(glm(n/expo ~ type*region, quasipoisson, wei=expo))
+anova(glm(n/expo ~ region*type, quasipoisson, wei=expo))
+
+# The analysis results for 1+region+type is equal to 1+type+region. The same is true for 1+region+type+region*type and 1+type+region+type*region.
+
+# Q7 ---- Einde
