@@ -149,4 +149,18 @@ anova(glm(n/expo ~ region*type, quasipoisson, wei=expo))
 
 # TODO: Check MART p.250.
 
-  # Q8 ---- Einde
+# Q8 ---- Einde
+
+summary(g.off)
+
+X <- model.matrix(g.off)
+X[subset,] ## print a subset of its rows; all columns
+
+# Q9 ---- Explain why multiplying the 0/1 dummies with region2 and type3 gives the dummy for
+#         region2:type3.
+
+# TODO: Maak in LaTeX afbeeldingen van de dummies en laat zien dat het product van de afbeelding gelijk is aan de afbeelding van het product.
+
+# Q9 ---- Einde
+
+# Q9 ---- Einde
