@@ -104,3 +104,18 @@ str(rep(1:3, each=3, len=54))
 # rep(1:3, each=3, len=54) creates a vector of integers of three ones, three twos and three threes, repeated to a length of 54.
 
 # Q5 ---- Einde
+
+set.seed(1); subset <- sort(sample(1:54,15))
+data.frame(sex, region, type, job, n, expo)[subset,]
+
+# Q6 ---- For the first two cells listed, check if the covariates have the right value.
+
+# The first cell is 3. We check the covariates
+cbind(sex=sex[3],region=region[3],type=type[3],job=job[3],n=n[3],expo=expo[3])
+
+# The second cell is 8. We check the covariates
+cbind(sex=sex[8],region=region[8],type=type[8],job=job[8],n=n[8],expo=expo[8])
+
+# We conclude that the covariates have the same value.
+
+# Q6 ---- Einde
