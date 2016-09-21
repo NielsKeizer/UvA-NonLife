@@ -199,3 +199,16 @@ cbind(g.off$family$linkinv(model.matrix(g.off) %*% coef(g.off) + g.off$offset),f
 # The first item contains the list of recalculated values, the second the values, directly from the model.
 
 # Q11 ---- Einde
+
+# Q12 ---- a) Analyze the deviances of g.main and g.
+#          b) Why is g. a restriction of g.main?
+#          c) Does the restriction in g. actually make sense? Hint: what does it mean for the dierence
+#             in premiums for regions 1, 2 and 3, other tari factors being equal?
+
+g. <- glm(n/expo ~ as.numeric(region)+type, quasipoisson, wei=expo)
+summary(g.main); summary(g.)
+anova(g., g.main)
+
+# It is a restriction, because you imply there is a linear relation between two degrees of freedom for the region types.
+
+# Q12 ---- Einde
