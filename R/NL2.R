@@ -135,3 +135,18 @@ anova(glm(n/expo ~ region*type, quasipoisson, wei=expo))
 # The analysis results for 1+region+type is equal to 1+type+region. The same is true for 1+region+type+region*type and 1+type+region+type*region.
 
 # Q7 ---- Einde
+
+# Q8 ---- There are two dierent ways to deal with the `exposure'; see MART p. 250. One is by taking
+#         average claim frequencies n/expo and using weights expo, as is done above, the other is by
+#         adding the log of the exposure as an `oset' to the linear predictor:
+
+(g.off <- glm(n ~ 1+region+type+region:type+offset(log(expo)),
+              family=poisson(link=log)))
+(g.wei <- glm(n/expo ~ region*type, poisson, wei=expo))
+
+# The output of g.off and g.wei contains the same coefficients, degrees of freedom, null deviance and residual deviance.
+# The AIC for g.off is 290.7, however, for g.wei this is Inf. Also, g.wei throws warnings, on further inspection these arise from having non-integer x values in calls to dpois.
+
+# TODO: Check MART p.250.
+
+  # Q8 ---- Einde
