@@ -7,6 +7,7 @@ rm(list=ls(all=TRUE))
 
 # Genereer data
 n.obs <- 10000; set.seed(4)
+# n.obs <- 10000; set.seed(4) # Gebruik deze regel voor een grotere sample size.
 sx <- as.factor(sample(1:2, n.obs, repl=TRUE, prob=c(6,4)))
 jb <- as.factor(sample(1:3, n.obs, repl=TRUE, prob=c(3,2,1)))
 re.tp <- sample(1:9, n.obs, repl=TRUE, prob=c(.1,.05,.15,.15,.1,.05,.1,.1,.2))
@@ -25,11 +26,11 @@ hh <- as.integer(hh); object.size(hh)/length(hh) ## 4 + a bit
 object.size(re.tp); rm(re.tp); rm(hh)
 
 # Q1 ---- How many bytes does it take to store 1,...,10,1000,100000 logical values TRUE/FALSE?
-for (value in c(1,2,3,4,5,6,7,8,9,10,1000,100000)){
-  hh <- rep(TRUE,value)
-  rr <- sample(c(TRUE,FALSE),value,repl=TRUE,prob=c(1,1))
+for (n_values in c(1,2,3,4,5,6,7,8,9,10,1000,100000)){
+  hh <- rep(TRUE,n_values)
+  rr <- sample(c(TRUE,FALSE),n_values,repl=TRUE,prob=c(1,1))
   af <- as.factor(rr)
-  print(c(value, object.size(hh), object.size(rr), object.size(af)))
+  print(c(n_values, object.size(hh), object.size(rr), object.size(af)))
 }
 
 rm(hh,rr,ah)
@@ -47,10 +48,8 @@ y <- rpois(n.obs, mu)
 table(y)
 
 # Q2 ---- Now compare mean(y) and var(y), and comment.
-cbind(mean=mean(y),variance=var(y))
+cbind(mean=mean(y),variance=var(y),phi=var(y)/mean(y))
 
-phi <- var(y)/mean(y)
-phi
 # The overdispersion factor phi is not vary stable and usually larger than 1. This is because the sample is to small for the dispersion factor to converge to its theoretical value.
 
 # Q2 ---- Einde
@@ -112,7 +111,6 @@ data.frame(sex, region, type, job, n, expo)[subset,]
 
 # The first cell is 3. We check the covariates
 cbind(sex=sex[3],region=region[3],type=type[3],job=job[3],n=n[3],expo=expo[3])
-
 # The second cell is 8. We check the covariates
 cbind(sex=sex[8],region=region[8],type=type[8],job=job[8],n=n[8],expo=expo[8])
 
