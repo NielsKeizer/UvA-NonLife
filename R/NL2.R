@@ -111,7 +111,6 @@ data.frame(sex, region, type, job, n, expo)[subset,]
 
 # The first cell is 3. We check the covariates
 cbind(sex=sex[3],region=region[3],type=type[3],job=job[3],n=n[3],expo=expo[3])
-
 # The second cell is 8. We check the covariates
 cbind(sex=sex[8],region=region[8],type=type[8],job=job[8],n=n[8],expo=expo[8])
 
