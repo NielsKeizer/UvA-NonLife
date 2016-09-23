@@ -295,5 +295,159 @@ Residual Deviance: 42.41 	AIC: 290.7
 The output of \verb|g.off| and \verb|g.wei| contain the same coefficients, degrees of freedom, null deviance and residual deviance.
 The AIC for g.off is 290.7, however, for g.wei this is Inf. Also, g.wei throws warnings, on further inspection these arise from having non-integer x values in calls to dpois. This is what prevents the \verb|glm| function from computing the AIC.
 
+\subsection*{Q9}
+
+We define the dummy functions \verb|region2| and \verb|type3| as follows:
+
+\begin{equation}
+\verb|region2| = 
+\begin{cases}
+	1 & \verb|region| = 2 \\
+	0 & \verb|region| \neq 2
+\end{cases}
+\end{equation}
+\begin{equation}
+\verb|type3| = 
+\begin{cases}
+1 & \verb|type| = 3 \\
+0 & \verb|type| \neq 3
+\end{cases}
+\end{equation}
+
+Multiplying these functions gives a new function
+
+\begin{equation}
+\verb|region2| \cdot \verb|type3| = 
+\begin{cases}
+1 & \verb|region| = 2 \land \verb|type| = 3 \\
+0 & \verb|region| \neq 2 \lor \verb|type| \neq 3
+\end{cases}
+\end{equation}
+
+Here $\land$ is the logical AND operator and $\lor$ is the logical OR operator. We see that this function equals $1$ when \verb|region| equals $2$ and \verb|type| equals $3$, zero otherwise. It is therefore the same function as the dummy function \verb|region2:type3|.
+
+\subsection*{Q10}
+
+We run the following \verb|R| code to generate \verb|g.main|.
+
+\begin{verbatim}
+> g.main <- glm(n/expo ~ region+type, quasipoisson, wei=expo)
+> coef(g.main)
+(Intercept)     region2     region3       type2       type3 
+-3.0313238   0.2314097   0.4604585   0.3941889   0.5833108 
+\end{verbatim}
+
+\subsubsection*{a)}
+
+If $\verb|region|=1$ and $\verb|type|=1$, then the indicators for \verb|region2|, \verb|region3|, \verb|type2| and \verb|type3| are $0$. Thus we only have to calculate:
+\begin{verbatim}
+> exp(g.main$coefficients["(Intercept)"])
+(Intercept) 
+0.04825172 
+\end{verbatim}
+
+The first row of the dataset has region=1 and type=1, so we check against the fitted values from the glm.
+\begin{verbatim}
+> g.main$fitted.values[1]
+1 
+0.04825172 
+\end{verbatim}
+
+Which is the same.
+
+\subsubsection*{b)}
+
+We run the following code to determine the worst \verb|type/region| combination.
+
+Assuming all \verb|type/region| combinations already exist in the model data (which is true):
+\begin{verbatim}
+> max(g.main$fitted.value)
+[1] 0.1370301
+\end{verbatim}
+
+By going through all possible combinations using a max function:
+\begin{verbatim}
+> exp(g.main$coefficients[1]+max(0,g.main$coefficients[2:3])+max(0,g.main$coefficients[4:5]))
+(Intercept) 
+0.1370301 
+\end{verbatim}
+The maximum with $0$ is taken in case both coefficients for \verb|region| and/or \verb|type| are negative. In that case, the baseline $\verb|region|=1$ and/or $\verb|type|=1$ would be the worst case.
+
+Showing all possible combinations:
+\begin{verbatim}
+> exp(g.main$coefficients[1]+matrix(c(0,g.main$coefficients[2:3]),3,3)
++                           +t(matrix(c(0,g.main$coefficients[4:5]),3,3)))
+           [,1]       [,2]       [,3]
+[1,] 0.04825172 0.07156602 0.08646522
+[2,] 0.06081528 0.09020005 0.10897864
+[3,] 0.07646934 0.11341785 0.13703011
+\end{verbatim}
+
+All three methods show that the estimated annual number of claims for the worst \verb|type/region| combination equals $0.1370301$. The third method shows that this is the case when $\verb|region|=3$ and $\verb|type|=3$.
+
+\subsection*{Q11}
+
+Here we reconstruct the vector of fitted values using \verb|R|. We also compare the results to the results from the model itself to show that the calculation is correct.
+
+\begin{verbatim}
+> cbind(g.off$family$linkinv(model.matrix(g.off) %*% coef(g.off) + g.off$offset),
++       fitted.values(g.off))
+        [,1]      [,2]
+1   3.524590  3.524590
+2   7.754098  7.754098
+3  10.573770 10.573770
+4   5.982456  5.982456
+5   8.157895  8.157895
+6  10.877193 10.877193
+7  13.846154 13.846154
+8  13.846154 13.846154
+9  12.738462 12.738462
+10 11.464567 11.464567
+11  7.779528  7.779528
+12  9.007874  9.007874
+13 11.071942 11.071942
+14 12.237410 12.237410
+15 11.071942 11.071942
+16 13.292308 13.292308
+17 14.953846 14.953846
+18 24.092308 24.092308
+19 13.432836 13.432836
+20  9.671642  9.671642
+21 10.746269 10.746269
+22 10.540541 10.540541
+23 21.081081 21.081081
+24 17.027027 17.027027
+25 25.411765 25.411765
+26 13.176471 13.176471
+27 15.058824 15.058824
+28  3.877049  3.877049
+29  8.106557  8.106557
+30  9.163934  9.163934
+31 15.771930 15.771930
+32  7.070175  7.070175
+33 14.140351 14.140351
+34  7.200000  7.200000
+35  9.415385  9.415385
+36 14.953846 14.953846
+37  8.188976  8.188976
+38  7.370079  7.370079
+39  8.188976  8.188976
+40 16.899281 16.899281
+41 15.733813 15.733813
+42 13.985612 13.985612
+43 19.107692 19.107692
+44 21.600000 21.600000
+45 14.953846 14.953846
+46 13.432836 13.432836
+47  9.134328  9.134328
+48 15.582090 15.582090
+49  8.918919  8.918919
+50 19.459459 19.459459
+51 12.972973 12.972973
+52 10.352941 10.352941
+53 20.705882 20.705882
+54 27.294118 27.294118
+\end{verbatim}
+
 
 \end{document}

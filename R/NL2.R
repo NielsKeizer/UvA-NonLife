@@ -145,7 +145,7 @@ anova(glm(n/expo ~ region*type, quasipoisson, wei=expo))
 # The output of g.off and g.wei contains the same coefficients, degrees of freedom, null deviance and residual deviance.
 # The AIC for g.off is 290.7, however, for g.wei this is Inf. Also, g.wei throws warnings, on further inspection these arise from having non-integer x values in calls to dpois.
 
-# TODO: Check MART p.250.
+# DONE: Check MART p.250.
 
 # Q8 ---- Einde
 
