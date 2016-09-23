@@ -138,9 +138,9 @@ anova(glm(n/expo ~ region*type, quasipoisson, wei=expo))
 #         average claim frequencies n/expo and using weights expo, as is done above, the other is by
 #         adding the log of the exposure as an `oset' to the linear predictor:
 
+(g.wei <- glm(n/expo ~ region*type, poisson, wei=expo))
 (g.off <- glm(n ~ 1+region+type+region:type+offset(log(expo)),
               family=poisson(link=log)))
-(g.wei <- glm(n/expo ~ region*type, poisson, wei=expo))
 
 # The output of g.off and g.wei contains the same coefficients, degrees of freedom, null deviance and residual deviance.
 # The AIC for g.off is 290.7, however, for g.wei this is Inf. Also, g.wei throws warnings, on further inspection these arise from having non-integer x values in calls to dpois.
