@@ -525,6 +525,260 @@ The residual deviances are pretty much equal, which means that both models are a
 
 When you look at the region coefficients of \verb|g.main|, you see that the coefficient for region $3$ is indeed twice as large as the one for region $2$. Therefore this appears to make sense. However, there is no inherent order to regions, which means that the model should give the same results when we switch regions $2$ and $3$. $2$ and $3$ might as well be "Amsterdam" and "The Hague", the numbers are labels and not to be interpreted as actual ordered numbers. The \verb|g.main| model would simply switch the coefficients for the regions, but the \verb|g.| model would give different results. So while the restriction seems to make sense, it actually does not make sense at all, because it is an artifact of the ordering choice of the regions.
 
+\subsection*{Q13}
+We run the code from the question and obtain the following output:
 
+\begin{verbatim}
+> rm(list=ls(all=TRUE))
+> n.obs <- 10000; set.seed(4) ## 10000 obs.; random seed initialized to 4
+> sx <- sample(1:2, n.obs, repl=TRUE, prob=c(6,4)); sx <- as.factor(sx)
+> jb <- as.factor(sample(1:3, n.obs, repl=TRUE, prob=c(3,2,1)))
+> re.tp <- sample(1:9, n.obs, repl=TRUE, prob=c(2,1,3,3,2,1,2,2,4))
+> tp <- as.factor(c(1,2,3,1,2,3,1,2,3)[re.tp])
+> re <- as.factor(c(1,1,1,2,2,2,3,3,3)[re.tp])
+> rm(re.tp)
+> mo <- 3 * sample(1:4, n.obs, repl=TRUE, prob=c(1,1,0,8))
+> mu <- 0.05 * c(1,1.2)[sx] * c(1,1,1)[jb] *
++   c(1,1.2,1.44)[re] * c(1,1.2,1.44)[tp] * mo/12
+> y <- rpois(n.obs, mu)
+> aggr <- aggregate(list(Expo=mo/12,nCl=y,nPol=1),
++                   list(Jb=jb,Tp=tp,Re=re,Sx=sx), sum)
+> anova(glm(nCl~(Tp+Re+Sx+Jb)^4, poisson, offset=log(Expo), data=aggr), test="Chisq")
+Analysis of Deviance Table
+
+Model: poisson, link: log
+
+Response: nCl
+
+Terms added sequentially (first to last)
+
+
+            Df Deviance Resid. Df Resid. Dev  Pr(>Chi)    
+NULL                           53    101.825              
+Tp           2   34.026        51     67.799 4.086e-08 ***
+Re           2   20.075        49     47.724 4.374e-05 ***
+Sx           1    3.565        48     44.159   0.05899 .  
+Jb           2    1.438        46     42.721   0.48724    
+Tp:Re        4    2.223        42     40.498   0.69477    
+Tp:Sx        2    4.612        40     35.886   0.09967 .  
+Tp:Jb        4    3.513        36     32.373   0.47588    
+Re:Sx        2    0.795        34     31.578   0.67189    
+Re:Jb        4    6.295        30     25.283   0.17818    
+Sx:Jb        2    2.746        28     22.537   0.25333    
+Tp:Re:Sx     4    1.780        24     20.757   0.77619    
+Tp:Re:Jb     8    1.451        16     19.306   0.99350    
+Tp:Sx:Jb     4    2.678        12     16.629   0.61316    
+Re:Sx:Jb     4    9.848         8      6.780   0.04306 *  
+Tp:Re:Sx:Jb  8    6.780         0      0.000   0.56050    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+\end{verbatim}
+
+The anova table shows that the variables \verb|Tp| and \verb|Re| are significant, the variable \verb|Sx| is only significant at the 90 \% level and the variable \verb|Jb| is not significant. Therefore the variables \verb|Tx| and \verb|Re| have to be included into the model, \verb|Sx| can be left out and \verb|Jb| should be left out. From the interaction terms the term \verb|Re:Sx:Jb| is significant at the 95 \% level but since \verb|Sx| is not incorporated into the model it will be advisable not to include this term.
+
+\subsection*{Q14}
+
+Running the code from the question gives the following output.
+
+\begin{verbatim}
+> g <- glm(nCl~Re*Sx, poisson, offset=log(Expo), data=aggr)
+> anova(g, test="Chisq")
+Analysis of Deviance Table
+
+Model: poisson, link: log
+
+Response: nCl
+
+Terms added sequentially (first to last)
+
+
+      Df Deviance Resid. Df Resid. Dev  Pr(>Chi)    
+NULL                     53    101.825              
+Re     2  24.2890        51     77.536 5.317e-06 ***
+Sx     1   3.8384        50     73.698   0.05009 .  
+Re:Sx  2   1.4998        48     72.198   0.47240    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+\end{verbatim}
+
+Changing the anova analysis to the complete dataset gives the following output.
+
+\begin{verbatim}
+> dataset <- list(Jb=jb,Tp=tp,Re=re,Sx=sx)
+> g.full <- glm(y~Re*Sx, poisson, offset=log(mo/12), data=dataset)
+> anova(g.full , test="Chisq")
+Analysis of Deviance Table
+
+Model: poisson, link: log
+
+Response: y
+
+Terms added sequentially (first to last)
+
+
+      Df Deviance Resid. Df Resid. Dev  Pr(>Chi)    
+NULL                   9999     3894.9              
+Re     2  24.2890      9997     3870.6 5.317e-06 ***
+Sx     1   3.8384      9996     3866.8   0.05009 .  
+Re:Sx  2   1.4998      9994     3865.3   0.47240    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+>
+\end{verbatim}
+As expected there are no differences in the anova analysis on the complete dataset in comparison to the anova analysis on the aggregated set. The deviances and statistical relevances are equal in both anova tables. The only difference is in the residual degrees of freedom and the residual deviance which is directly the result of the amount of data points.
+
+\section{Analyzing the bonus-malus system - Sec. 9.6}
+
+\subsection*{Q15}
+To make a log-scale plot of the bonus-malus class against the average number of claims we use the following \verb|R| code
+\begin{verbatim}
+t1 <- tapply(nCl, B, sum); t2 <- tapply(Expo, B, sum)
+t3 <- t1/t2*100
+plot(t3, log="y",main = "Log scale",ylim=c(5,25),
+     xlab="BM class", ylab="Av. claims percentage")
+lines(exp(fitted(lm(log(t3[1:13])~I(1:13)))),col="darkred")
+\end{verbatim}
+which gives the graph in Figure \ref{Figure_Question15}
+\begin{center}
+\begin{figure}[H]
+
+\includegraphics[scale=0.8]{Q15_LogScalePlot.png}
+
+\caption{Log-scale plot of bonus-malus class vs. average number of claims with linear regression fitted on the first 13 bonus-malus classes}
+\label{Figure_Question15}
+
+\end{figure}
+\end{center}
+
+In the figure the average number of claims is plotted on a log-scale.
+
+
+\subsection*{Q16}
+
+To determine the linear regression coefficients and produce the required graphs we execute the code given in the question and add code for the determination of the coefficients and graphs to obtain the following output
+
+\begin{verbatim}
+> relWt <- ActualWt/ActualWt[1]
+> s3 <- tapply(nCl,W, sum) / tapply(Expo,W, sum); s3 <- s3 / s3[1]
+> lm(s3~relWt)$coeff
+(Intercept)       relWt 
+       0.19        0.83 
+> lm(log(s3)~0 + log(relWt))$coeff
+log(relWt) 
+      0.89 
+> 
+> par(mfrow=c(1,2)) #put figures in a 1 x 2 array
+> plot(relWt,s3, main = "Ordinary scale",ylim=c(1,2.5),
++      xlab="Relative Weight", ylab="Av. number of claims")
+> lines(relWt,fitted(lm(s3~relWt)),ylim=c(1,2.5),col="darkred")
+> 
+> plot(relWt,s3, log = "xy", main = "Log-log scale",ylim=c(1,2.5),
++      xlab="Relative Weight", ylab="Av. number of claims")
+> lines(relWt,exp(fitted(lm(log(s3)~0 + log(relWt)))),col="darkred")
+>
+\end{verbatim}
+
+We force the intercept of the log-log regression to be zero by using the code \verb|log(s3)~0 + log(relWt)|. We see that the coefficients produce a regression line equal to the information in the question. The graphs shown in Figure \ref{Figure_Question16} are produced by \verb|R|.
+\begin{center}
+\begin{figure}[H]
+
+\includegraphics[scale=1]{Q16_OrdinaryAndLogLogScalePlot.png}
+
+\caption{Ordinary scale and Log-log scale plots and regression lines of relative weight vs. average number of claims.}
+\label{Figure_Question16}
+
+\end{figure}
+\end{center}
+
+\subsection*{Q17}
+
+The young class is defined to be the ages 18-23. If a 18 year old person enters the bonus-malus system in class 5 and does not make any claims he will be in class 10 when 23 years old. Therefore it is impossible to be young and also be in the bonus-malus classes 11-14. \\
+
+The model thus does not support persons in the young age class to be in bonus-malus classes 11-14. Taken together with the other risk factors (\verb|R| has 3 classes, \verb|A| has 3 classes and 1 in calculation, \verb|M| has 3 classes, \verb|U| has 2 classes, \verb|B| has 14 classes and 11-14 in calculation and \verb|WW| has 11 classes) there will be \begin{equation}
+3 \times 1 \times 3 \times 2 \times 4 \times 11 = 792 
+\end{equation}
+empty classes.
+
+\subsection*{Q18}
+To determine the loss ratios with respect to the risk groups we use the example code for loss ratios per risk group from page 12 from assignment 2 to obtain the following output.
+\begin{verbatim}
+> GrandTotalLossRatio <- sum(TotCl)/sum(TotPrem)*100 ## the grand total loss ratio in pct
+> GrandTotalLossRatio
+[1] 56
+> for (rf in list(B,WW,R,M,A,U)) ## for all risk factors, do:
++   {print(round(tapply(TotCl,rf,sum)/tapply(TotPrem,rf,sum)*100))}
+ 1  2  3  4  5  6  7  8  9 10 11 12 13 14 
+53 58 58 59 62 64 63 57 59 62 53 52 50 53 
+ 1  2  3  4  5  6  7  8  9 10 11 
+58 60 58 58 58 57 57 55 56 54 53 
+ 1  2  3 
+56 57 56 
+ 1  2  3 
+58 57 55 
+  1   2   3 
+119  49  73 
+ 1  2 
+52 67 
+> 
+\end{verbatim}
+We see that the loss ratio of the entire portfolio is 56\%. The tables show how the loss ratio differs per risk factor class for each risk factor independently. To visualize the behaviour in the tables we plot the value of the loss ratio with respect to the risk factor class for each risk factor and add the grand total loss ratio line (see Figure \ref{Figure_Question18}, red line is grand total loss ratio).
+\begin{center}
+\begin{figure}[H]
+
+\includegraphics[scale=1]{Q18_Risk_factors_vs_loss_ratio.png}
+
+\caption{Loss ratio vs. Risk factors}
+\label{Figure_Question18}
+
+\end{figure}
+\end{center}
+
+The annual premium is given in Equation (9.35) of MART
+\begin{equation}
+\pi_{rambuw} = 500 \times P_b \times (W_w / W_1) \times R_r \times M_m
+\end{equation}
+where $P_b$ is the factor for the bonus-malus system, $W_w / W_1$ the relative weight factor, $R_r$ the region factor and $M_m$ the mileage factor (factor values per class are given in MART). The premium therefore does not recognise the risk factors age and usage. 
+
+Figure \ref{Figure_Question18} (and the table) clearly show that the loss ratio is very different for the different age groups (Age class vs. Loss ratio). The loss ratio is very high for the young age group, relatively low for the middle age group and again higher for the old age group. This patterns implies that the young and old age class should pay more premium in comparision to the current premium which does not differ by age. Completely rejecting an age class will probably not be possible from a legal perspective because of anti discrimination laws. Asking for a higher premium will be possible for the young age class but will be less socially acceptable for the old age class. Because of these reasons the current situation where the middle age class subsidizes the young and old age class will probably have to remain. \\
+
+Figure \ref{Figure_Question18} (and the table) show that the Usage class vs. the loss ratio gives that Private use (class 1) has a lower loss ratio when compared to Business use (class 2). From a risk perspective it is advisable that this risk factor is incorporated in the rating system. It is probably not advisable to incorporate Usage as risk factor when taking the competitive aspect of the policy into account. Business use usually gives high policy volumes (many policies are sold together) and since the difference in loss ratio is not very large it is not advisable to incorporate usage as a risk factor into the premium. \\
+
+When comparing the loss ratios with respect to BM-classes it can be seen that the first BM-class and the BM-classes 11-14 have lower loss ratios than the average and the other classes have higher loss ratios. The low loss ratio in class 1 is interesting and might be the result of persons which drive more carefull after having filed one or multiple claims. The classes BM-classes 11-14 have large premium discounts because the risk factor in the premium of
+\begin{equation}
+P_b = 120,100,90,80,70,60,55,50,45,40,37.5,35,32.5,30 \%
+\end{equation} 
+The discount which gives $37.5 - 30 \%$ of the base premium is not low enough for the performance of the groups 11-14. From a risk perspective it is possible to apply a higher discount. From a market perspective a higher discount is probably unnecessary because of the already low premium in these classes. \\
+
+The comparision of the loss ratios with respect to Region classes shows that the region class are well priced. The loss ratios of $56,57,56$ show that it is not necessary to adjust the premium with respect to the region class. \\
+
+Similarly the comparision of the loss ratio with respect to mileage class shows no great deviation from the average (loss ratios $58,57,55$). From a risk perspective a small recalibration of the mileage discount factors ($90, 100, 110 \%$) is advisable. From a competitive perspective it is probably preferable that the low mileage users pay low premiums. It would be necessary to have more information about the current market placement of the policy whether a small recalibration of the discount factors is advisable. \\
+
+The premium with respect to the relative weight gives that the low weight classes have a higher loss ratio when compared to the higher weight classes. The fit in question 15 already showed that the relationship between the average number of claims and the relative weight is not linear and asking a premium proportional to $w_j^{0.89}$ would be more appropriate. The result of the linearity of the premium with respect to the relative weight is the high loss ratio in the low weight classes and the low loss ratio in the higher classes. The rating system can be improved by changing the premium to 
+\begin{equation}
+\pi_{rambuw} = 500 \times P_b \times (W_w / W_1)^{0.89} \times R_r \times M_m
+\end{equation}
+
+\subsection*{Q19}
+We run the code given in the question and obtain
+\begin{verbatim}
+> l <- list(Use=U,Age=A,Area=R,Mile=M)
+> ftable(round(100*tapply(TotCl,l,sum)/tapply(TotPrem,l,sum)),
++        row.vars=2, col.vars=c(1,3,4))
+    Use    1                                   2                                
+    Area   1           2           3           1           2           3        
+    Mile   1   2   3   1   2   3   1   2   3   1   2   3   1   2   3   1   2   3
+Age                                                                             
+1        111  99  90 108 114 114 114 110  98 143 148 114 209 177 112 155 160 139
+2         48  44  41  48  43  40  50  44  40  71  60  55  72  61  52  69  62  56
+3         71  65  67  79  75  57  70  64  58  95  86  85 104  93  89  94  82  81
+>
+\end{verbatim}
+The table shows that the middle age group has substantially lower loss ratios than the young and old age groups. In the middle age group the Private use class (usage class 1) has a lower loss ratio than the Business use (usage class 2). The differences in the loss ratio with respect to age and usage classes are to be expected since the premium does not uses these risk factors. \\
+
+The lowest loss ratio (ratio equals 40 \%) can be found in the table where age class equals 2 (middle age class), usage class equals 1 (Private use), area class equals 2 or 3 (town or big city), mileage class equals 3 (high mileage). The highest loss ratio (ratio equals 209 \%) can be found for the young age group, Business use, in a town with low mileage. \\
+
+Since the risk factors mileage and region are already incorporated into the premium the marketing focus should be on the not incorporated risk factors Usage and Age. The marketing focus should be on the middle age class which use their car for Private use. A marketing campaign should simultaneously try to detract the young age class in general and the old age class business users. 
 
 \end{document}
