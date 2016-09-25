@@ -449,5 +449,82 @@ Here we reconstruct the vector of fitted values using \verb|R|. We also compare 
 54 27.294118 27.294118
 \end{verbatim}
 
+\subsection*{Q12}
+
+We run the code from the assignment to get the following in \verb|R|.
+
+\begin{verbatim}
+> g. <- glm(n/expo ~ as.numeric(region)+type, quasipoisson, wei=expo)
+> summary(g.main); summary(g.)
+
+Call:
+glm(formula = n/expo ~ region + type, family = quasipoisson, 
+    weights = expo)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-1.92326  -0.65638  -0.05731   0.47902   2.31440  
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -3.03132    0.09612 -31.537  < 2e-16 ***
+region2      0.23141    0.09379   2.467 0.017149 *  
+region3      0.46046    0.09135   5.041 6.73e-06 ***
+type2        0.39419    0.09610   4.102 0.000154 ***
+type3        0.58331    0.09191   6.347 6.82e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for quasipoisson family taken to be 0.8965432)
+
+    Null deviance: 104.73  on 53  degrees of freedom
+Residual deviance:  44.94  on 49  degrees of freedom
+AIC: NA
+
+Number of Fisher Scoring iterations: 5
+
+
+Call:
+glm(formula = n/expo ~ as.numeric(region) + type, family = quasipoisson, 
+    weights = expo)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-1.92136  -0.65658  -0.05655   0.48053   2.31810  
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)        -3.26097    0.12181 -26.770  < 2e-16 ***
+as.numeric(region)  0.23014    0.04483   5.133 4.68e-06 ***
+type2               0.39425    0.09507   4.147  0.00013 ***
+type3               0.58332    0.09099   6.411 5.01e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for quasipoisson family taken to be 0.8787113)
+
+    Null deviance: 104.732  on 53  degrees of freedom
+Residual deviance:  44.941  on 50  degrees of freedom
+AIC: NA
+
+Number of Fisher Scoring iterations: 5
+
+> anova(g., g.main)
+Analysis of Deviance Table
+
+Model 1: n/expo ~ as.numeric(region) + type
+Model 2: n/expo ~ region + type
+  Resid. Df Resid. Dev Df  Deviance
+1        50     44.941             
+2        49     44.940  1 0.0002148
+\end{verbatim}
+
+The residual deviances are pretty much equal, which means that both models are about equally as good at estimating the portfolio.
+
+\verb|g.| is a restriction of \verb|g.main|, because by choosing \verb|region| to be numeric, you assume that the linear estimator for region $3$ is twice as big as the linear estimator for region $2$. So instead of having two degrees of freedom, you assume that there is a dependency between regions $2$ and $3$, which reduces the number of degrees of freedom by 1.
+
+When you look at the region coefficients of \verb|g.main|, you see that the coefficient for region $3$ is indeed twice as large as the one for region $2$. Therefore this appears to make sense. However, there is no inherent order to regions, which means that the model should give the same results when we switch regions $2$ and $3$. $2$ and $3$ might as well be "Amsterdam" and "The Hague", the numbers are labels and not to be interpreted as actual ordered numbers. The \verb|g.main| model would simply switch the coefficients for the regions, but the \verb|g.| model would give different results. So while the restriction seems to make sense, it actually does not make sense at all, because it is an artifact of the ordering choice of the regions.
+
+
 
 \end{document}
