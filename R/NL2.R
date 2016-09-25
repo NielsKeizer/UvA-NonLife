@@ -210,3 +210,106 @@ anova(g., g.main)
 # It is a restriction, because you imply there is a linear relation between two degrees of freedom for the region types.
 
 # Q12 ---- Einde
+
+# Bonus Malus opdracht:
+
+rm(list=ls(all=TRUE)) ## First remove traces of previous sessions
+fn <- "http://www1.fee.uva.nl/ke/act/people/kaas/Cars.txt"
+Cars <- read.table(fn, header=TRUE)
+Bminus1 <- Cars$B - 1; Bis14 <- as.numeric(Cars$B==14)
+Cars$A <- as.factor(Cars$A); Cars$R <- as.factor(Cars$R)
+Cars$M <- as.factor(Cars$M); Cars$U <- as.factor(Cars$U)
+Cars$B <- as.factor(Cars$B); Cars$WW <- as.factor(Cars$WW)
+ActualWt <- c(650,750,825,875,925,975,1025,1075,1175,1375,1600)
+W <- log(ActualWt/650)[Cars$WW]
+attach(Cars) ## to the search path; now nCl means Cars$nCl
+options(digits=2)
+100 * tapply(nCl, R, sum) / tapply(Expo, R, sum) ## 7.6 9.6 12.7
+100 * tapply(nCl,list(R=R,A=A),sum) / tapply(Expo,list(R=R,A=A),sum)
+100 * tapply(nCl,list(A:M,R:U),sum) / tapply(Expo,list(A:M,R:U),sum)
+
+sum(TotCl)/sum(TotPrem)*100 ## the grand total loss ratio in pct
+for (rf in list(B,WW,R,M,A,U)) ## for all risk factors, do:
+  print(round(tapply(TotCl,rf,sum)/tapply(TotPrem,rf,sum)*100))
+
+options(digits=5)
+ftable(xtabs(cbind(Expo, nCl, TotCl, TotPrem) ~ R+A+M+U))
+
+# Opgave 15
+?tapply
+options(digits=2)
+t2 <- tapply(Expo, B, sum); round(100*t2/sum(Expo),1)
+
+par(mfrow=c(1,2)) ## to get plots next to each other
+t1 <- tapply(nCl, B, sum); t2 <- tapply(Expo, B, sum)
+t3 <- t1/t2*100
+
+plot(t3, main="Ordinary scale", ylim=c(5,25),
+     xlab="BM class", ylab="Av. claims percentage")
+lines(fitted(lm(t3[1:13]~I(1:13))),col="darkred")
+
+t1 <- tapply(nCl, B, sum); t2 <- tapply(Expo, B, sum)
+t3 <- t1/t2*100
+plot(t3, log="y",main = "Log scale",ylim=c(5,25),
+     xlab="BM class", ylab="Av. claims percentage")
+lines(exp(fitted(lm(log(t3[1:13])~I(1:13)))),col="darkred")
+
+relWt <- ActualWt/ActualWt[1]
+s3 <- tapply(nCl,W, sum) / tapply(Expo,W, sum); s3 <- s3 / s3[1]
+lm(s3~relWt)$coeff
+lm(log(s3)~0 + log(relWt))$coeff
+
+par(mfrow=c(1,2)) #put figures in a 1 x 2 array
+plot(relWt,s3, main = "Ordinary scale",ylim=c(1,2.5),
+     xlab="Relative Weight", ylab="Av. number of claims")
+lines(relWt,fitted(lm(s3~relWt)),ylim=c(1,2.5),col="darkred")
+
+plot(relWt,s3, log = "xy", main = "Log-log scale",ylim=c(1,2.5),
+     xlab="Relative Weight", ylab="Av. number of claims")
+lines(relWt,exp(fitted(lm(log(s3)~0 + log(relWt)))),col="darkred")
+
+
+GrandTotalLossRatio <- sum(TotCl)/sum(TotPrem)*100 ## the grand total loss ratio in pct
+GrandTotalLossRatio
+for (rf in list(B,WW,R,M,A,U)) ## for all risk factors, do:
+  {print(round(tapply(TotCl,rf,sum)/tapply(TotPrem,rf,sum)*100))}
+
+
+par(mfrow=c(3,2))
+PC_B <- round(tapply(TotCl,B,sum)/tapply(TotPrem,B,sum)*100)
+PC_WW <- round(tapply(TotCl,WW,sum)/tapply(TotPrem,WW,sum)*100)
+PC_R <- round(tapply(TotCl,R,sum)/tapply(TotPrem,R,sum)*100)
+PC_M <- round(tapply(TotCl,M,sum)/tapply(TotPrem,M,sum)*100)
+PC_A <- round(tapply(TotCl,A,sum)/tapply(TotPrem,A,sum)*100)
+PC_U <- round(tapply(TotCl,U,sum)/tapply(TotPrem,U,sum)*100)
+
+par(mfrow=c(3,2))
+
+plot(PC_B, main = "BM-class vs. Loss ratio",ylim=c(40,120),
+     xlab="BM - class", ylab="Loss ratio")
+abline(h=GrandTotalLossRatio,col="red")
+
+plot(PC_WW, main = "Weight class vs. Loss ratio",ylim=c(40,120),
+     xlab="Weight class", ylab="Loss ratio")
+abline(h=GrandTotalLossRatio,col="red")
+
+plot(PC_R, main = "Region class vs. Loss ratio",ylim=c(40,120),
+     xlab="Region class", ylab="Loss ratio")
+abline(h=GrandTotalLossRatio,col="red")
+
+plot(PC_M, main = "Mileage class vs. Loss ratio",ylim=c(40,120),
+     xlab="Mileage class", ylab="Loss ratio")
+abline(h=GrandTotalLossRatio,col="red")
+
+plot(PC_A, main = "Age class vs. Loss ratio",ylim=c(40,120),
+     xlab="Age class", ylab="Loss ratio")
+abline(h=GrandTotalLossRatio,col="red")
+
+plot(PC_U, main = "Usage class vs. Loss ratio",ylim=c(40,120),
+     xlab="Usage class", ylab="Loss ratio")
+abline(h=GrandTotalLossRatio,col="red")
+
+l <- list(Use=U,Age=A,Area=R,Mile=M)
+ftable(round(100*tapply(TotCl,l,sum)/tapply(TotPrem,l,sum)),
+       row.vars=2, col.vars=c(1,3,4))
+detach(Cars) ## don't forget
