@@ -525,7 +525,6 @@ The residual deviances are pretty much equal, which means that both models are a
 
 When you look at the region coefficients of \verb|g.main|, you see that the coefficient for region $3$ is indeed twice as large as the one for region $2$. Therefore this appears to make sense. However, there is no inherent order to regions, which means that the model should give the same results when we switch regions $2$ and $3$. $2$ and $3$ might as well be "Amsterdam" and "The Hague", the numbers are labels and not to be interpreted as actual ordered numbers. The \verb|g.main| model would simply switch the coefficients for the regions, but the \verb|g.| model would give different results. So while the restriction seems to make sense, it actually does not make sense at all, because it is an artifact of the ordering choice of the regions.
 
-
 \subsection*{Q13}
 We run the code from the question and obtain the following output:
 
@@ -701,6 +700,7 @@ The model thus does not support persons in the young age class to be in bonus-ma
 3 \times 1 \times 3 \times 2 \times 4 \times 11 = 792 
 \end{equation}
 empty classes.
+
 \subsection*{Q18}
 To determine the loss ratios with respect to the risk groups we use the example code for loss ratios per risk group from page 12 from assignment 2 to obtain the following output.
 \begin{verbatim}
@@ -780,6 +780,5 @@ The table shows that the middle age group has substantially lower loss ratios th
 The lowest loss ratio (ratio equals 40 \%) can be found in the table where age class equals 2 (middle age class), usage class equals 1 (Private use), area class equals 2 or 3 (town or big city), mileage class equals 3 (high mileage). The highest loss ratio (ratio equals 209 \%) can be found for the young age group, Business use, in a town with low mileage. \\
 
 Since the risk factors mileage and region are already incorporated into the premium the marketing focus should be on the not incorporated risk factors Usage and Age. The marketing focus should be on the middle age class which use their car for Private use. A marketing campaign should simultaneously try to detract the young age class in general and the old age class business users. 
-
 
 \end{document}

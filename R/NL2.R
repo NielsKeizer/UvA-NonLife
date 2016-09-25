@@ -193,7 +193,8 @@ exp(g.main$coefficients[1]+matrix(c(0,g.main$coefficients[2:3]),3,3) +t(matrix(c
 # Q11 ---- Using that the vector of linear predictors equals X.Beta, reconstruct the last vector using the
 #          four earlier items.
 
-cbind(g.off$family$linkinv(model.matrix(g.off) %*% coef(g.off) + g.off$offset),fitted.values(g.off))
+cbind(g.off$family$linkinv(model.matrix(g.off) %*% coef(g.off) + g.off$offset),
+      fitted.values(g.off))
 # The first item contains the list of recalculated values, the second the values, directly from the model.
 
 # Q11 ---- Einde
