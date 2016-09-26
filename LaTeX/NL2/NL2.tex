@@ -37,7 +37,7 @@
 
 How many bytes does it take to store $1,\ldots, 10, 1000, 100000$ logical values \verb|TRUE|/\verb|FALSE|?
 
-We assume that $1,\ldots, 10$ means all the integers from 1 to 10. To how many bytes are needed in \verb|R|, we use the function \verb|object.size()|.
+We assume that $1,\ldots, 10$ means all the integers from 1 to 10. To determine how many bytes are needed in \verb|R|, we use the function \verb|object.size()|.
 
 \begin{verbatim}
 > for (n_values in c(1,2,3,4,5,6,7,8,9,10,1000,100000)){
@@ -166,7 +166,7 @@ Read 54 items
 
 \subsection*{Q5}
 
-We are asked to comment on the difference between to lines of \verb|R| code.
+We are asked to comment on the difference between two lines of \verb|R| code.
 
 \begin{verbatim}
 > str(type)
@@ -186,7 +186,7 @@ First we take a sample from a dataframe which contains the portfolio.
 \begin{verbatim}
 > set.seed(1); subset <- sort(sample(1:54,15))
 > data.frame(sex, region, type, job, n, expo)[subset,]
-sex region type job  n expo
+   sex region type job  n expo
 3    1      1    1   3 10  210
 8    1      1    3   2 12  175
 10   1      2    1   1 10  196
@@ -293,7 +293,7 @@ Residual Deviance: 42.41 	AIC: 290.7
 \end{verbatim}
 
 The output of \verb|g.off| and \verb|g.wei| contain the same coefficients, degrees of freedom, null deviance and residual deviance.
-The AIC for g.off is 290.7, however, for g.wei this is Inf. Also, g.wei throws warnings, on further inspection these arise from having non-integer x values in calls to dpois. This is what prevents the \verb|glm| function from computing the AIC.
+The AIC for \verb|g.off| is 290.7, however, for \verb|g.wei| this is Inf. Also, \verb|g.wei| throws warnings, on further inspection these arise from having non-integer $x$ values in calls to \verb|dpois()|. This is what prevents the \verb|glm| function from computing the AIC.
 
 \subsection*{Q9}
 
@@ -575,7 +575,7 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 >
 \end{verbatim}
 
-The anova table shows that the variables \verb|Tp| and \verb|Re| are significant, the variable \verb|Sx| is only significant at the 90 \% level and the variable \verb|Jb| is not significant. Therefore the variables \verb|Tx| and \verb|Re| have to be included into the model, \verb|Sx| can be left out and \verb|Jb| should be left out. From the interaction terms the term \verb|Re:Sx:Jb| is significant at the 95 \% level but since \verb|Sx| is not incorporated into the model it will be advisable not to include this term.
+The anova table shows that the variables \verb|Tp| and \verb|Re| are significant, the variable \verb|Sx| is only significant at the 90 \% level and the variable \verb|Jb| is not significant. Therefore the variables \verb|Tp| and \verb|Re| have to be included into the model, \verb|Sx| can be left out and \verb|Jb| should be left out. From the interaction terms the term \verb|Re:Sx:Jb| is significant at the 95 \% level but since \verb|Sx| is not incorporated into the model it will be advisable not to include this term.
 
 \subsection*{Q14}
 
