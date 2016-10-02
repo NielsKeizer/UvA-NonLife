@@ -87,3 +87,6 @@ test(1,6950616)
 g.test <- glm(TotCl/Expo~R+A+U+WW+Bminus1+Bis14, quasipoisson, wei=Expo, data=Cars)
 anova(g1, g.test)
 test(9,23053)
+
+#Q3
+test(7515-7491,38616941-38408588)

@@ -250,3 +250,14 @@ Model 2: TotCl/Expo ~ R + A + U + WW + Bminus1 + Bis14
 This shows that allowing separate coefficients for the weight classes would not be an improvement.
 
 \end{document}
+
+\subsection*{Q3}
+
+To answer this question, we run the \verb|test| function defined earlier:
+
+\begin{verbatim}
+> test(7515-7491,38616941-38408588)
+[1] TRUE
+\end{verbatim}
+
+The interaction terms do improve the model significantly. It might be worthwhile to investigate which interaction terms give the most improvement, because there might be some interaction terms which are not significant by themselves.
