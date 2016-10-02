@@ -60,9 +60,30 @@ g2$family$linkinv(model.matrix(g2)[4000,]%*%coef(g2))
 # TODO Q1 afnmaken
 
 # Q2
-
+# Determine phi using a rich model
+g.rich <- glm(TotCl/Expo~R+A+U+WW+B, quasipoisson, wei=Expo, data=Cars)
+anova(g.rich)
+phi <- 38521406/7495
 # a) Can Bis14 be removed from model g1?
+g.test <- glm(TotCl/Expo~R+A+U+W+Bminus1, quasipoisson, wei=Expo, data=Cars)
+anova(g.test,g1)
+
+test <- function (Df, Deviance){
+  scaled.dev <- Deviance/phi
+  test.dev <- qchisq(0.95,Df)
+  return(scaled.dev>test.dev)
+}
+test(1, 138802)
 
 # b) Can B or W be removed from model g3?
+g.test <- glm(TotCl/Expo~R+A+U+W, quasipoisson, wei=Expo, data=Cars)
+anova(g.test,g3)
+test(13,40358385)
 
+g.test <- glm(TotCl/Expo~R+A+U+B, quasipoisson, wei=Expo, data=Cars)
+anova(g.test,g3)
+test(1,6950616)
 # c) In g1, does it help to allow separate coefficients for each weight class?
+g.test <- glm(TotCl/Expo~R+A+U+WW+Bminus1+Bis14, quasipoisson, wei=Expo, data=Cars)
+anova(g1, g.test)
+test(9,23053)
