@@ -170,29 +170,51 @@ g3$coefficients
 alpha.Gompertz <- log(b.Gompertz)
 kappa.Gompertz <- log(c.Gompertz)
 beta.Gompertz <- (1:nages)-1
+
 kappa.Gompertz <- kappa.Gompertz * sum(beta.Gompertz)
 beta.Gompertz <- beta.Gompertz/sum(beta.Gompertz)
 alpha.Gompertz <- alpha.Gompertz + mean(kappa.Gompertz)*beta.Gompertz
 kappa.Gompertz <- kappa.Gompertz - mean(kappa.Gompertz)
-
-par(mfrow=c(1,1))
-plot(alpha.LC,ylim=range(alpha.LC), ylab="alpha", xlab="x", col="blue", type="l")
-lines(alpha.glm,col="red", type="l")
-lines(alpha.LCGomp,col="green", type="l")
 
 g3.30 <- glm(Dxt.vec ~ x1 + offset(lnExt.vec),poisson,subset = x1>=30)
 g3.30$coefficients
+  
+(b.30.Gompertz <- exp(coef(g3.30)[1]))
+(c.30.Gompertz <- exp(coef(g3.30)[2]))
 
-(b.Gompertz <- exp(coef(g3.30)[1]))
-(b.Gompertz <- exp(coef(g3.30)[2]))
+alpha.30.Gompertz <- log(b.30.Gompertz)
+kappa.30.Gompertz <- log(c.30.Gompertz)
+beta.30.Gompertz <- (1:nages)-1
+kappa.30.Gompertz <- kappa.30.Gompertz * sum(beta.30.Gompertz)
+beta.30.Gompertz <- beta.30.Gompertz/sum(beta.30.Gompertz)
+alpha.30.Gompertz <- alpha.30.Gompertz + mean(kappa.30.Gompertz)*beta.30.Gompertz
+kappa.30.Gompertz <- kappa.30.Gompertz - mean(kappa.30.Gompertz)
 
-alpha.Gompertz <- log(b.Gompertz)
-kappa.Gompertz <- log(c.Gompertz)
-beta.Gompertz <- (1:nages)-1
-kappa.Gompertz <- kappa.Gompertz * sum(beta.Gompertz)
-beta.Gompertz <- beta.Gompertz/sum(beta.Gompertz)
-alpha.Gompertz <- alpha.Gompertz + mean(kappa.Gompertz)*beta.Gompertz
-kappa.Gompertz <- kappa.Gompertz - mean(kappa.Gompertz)
+par(mfrow=c(1,1))
 plot(alpha.LC,ylim=range(alpha.LC), ylab="alpha", xlab="x", col="blue", type="l")
-lines(alpha.glm,col="red", type="l")
-lines(alpha.LCGomp,col="green", type="l")
+lines(alpha.Gompertz,col="black", type="l")
+lines(alpha.30.Gompertz,col="red", type="l")
+
+
+g4 <- glm(Dxt.vec~x1*t-x1-1+offset(lnExt.vec), poisson, subset=x1>=30)
+b <- 1e5*exp(head(coef(g4),nyears)); c <- 100*(exp(tail(coef(g4),nyears))-1)
+par(mfrow=c(1,2))
+plot(b, xlab="t", ylab="b*100000", ylim=c(0,10), type="l", yaxp=c(0,10,2),
+     main="Gompertz parameters b;\nages 30+")
+plot(c, xlab="t", ylab="c-1 in %", ylim=c(9,12), type="l",
+     yaxp=c(9,12,3), main="Gompertz parameters c")
+
+t1 <- 1:nyears
+b.lm <- lm(b~t1,subset = t1>20)
+b.lm$coefficients
+
+t.intersect <- -b.lm$coefficients[1]/b.lm$coefficients[2]
+t.intersect
+#Q18
+b <- b/1e5; c<- c/100 + 1;
+log.mortality <-function(x){ log(b) + 	x * log(c)}
+
+plot(log.mortality(65), xlab="t", ylab="Log-mortality", type="l",col="black",ylim=c(-5,0))
+lines(log.mortality(75), col="red",  type="l")
+lines(log.mortality(85), col="blue", type="l")
+

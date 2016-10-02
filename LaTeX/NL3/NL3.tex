@@ -415,11 +415,127 @@ linear.predictors weights    prior.weights  y             model      qr
 which shows that the \verb|qr| part of the object \verb|g1| occupies the most space.
 
 \subsection*{Q16}
-	
+
+To find the parameters $\hat{b}$ and $\hat{c}$ that optimize the $\text{Gompertz}(b,c)$ likelihood we use a \verb|glm| call with offset \verb|offset(lnExt.vec)| and find the parameter values through exponentiating the estimates. The output of \verb|R| is the following for the complete estimate, the estimate restricted to the ages 30+ and the plots.
+\begin{verbatim}
+> x1 <- as.numeric(x)-1
+> g3 <- glm(Dxt.vec ~ x1 + offset(lnExt.vec),poisson)
+> g3$coefficients
+(Intercept)          x1 
+-9.11080428  0.08377865 
+> 
+> (b.Gompertz <- exp(coef(g3)[1]))
+(Intercept) 
+0.0001104658 
+> (c.Gompertz <- exp(coef(g3)[2]))
+x1 
+1.087388 
+> 
+> alpha.Gompertz <- log(b.Gompertz)
+> kappa.Gompertz <- log(c.Gompertz)
+> beta.Gompertz <- (1:nages)-1
+> 
+> kappa.Gompertz <- kappa.Gompertz * sum(beta.Gompertz)
+> beta.Gompertz <- beta.Gompertz/sum(beta.Gompertz)
+> alpha.Gompertz <- alpha.Gompertz + mean(kappa.Gompertz)*beta.Gompertz
+> kappa.Gompertz <- kappa.Gompertz - mean(kappa.Gompertz)
+> 
+> g3.30 <- glm(Dxt.vec ~ x1 + offset(lnExt.vec),poisson,subset = x1>=30)
+> g3.30$coefficients
+(Intercept)           x1 
+-10.13570719   0.09782707 
+>   
+> (b.30.Gompertz <- exp(coef(g3.30)[1]))
+(Intercept) 
+3.96386e-05 
+> (c.30.Gompertz <- exp(coef(g3.30)[2]))
+x1 
+1.102772 
+> 
+> alpha.30.Gompertz <- log(b.30.Gompertz)
+> kappa.30.Gompertz <- log(c.30.Gompertz)
+> beta.30.Gompertz <- (1:nages)-1
+> kappa.30.Gompertz <- kappa.30.Gompertz * sum(beta.30.Gompertz)
+> beta.30.Gompertz <- beta.30.Gompertz/sum(beta.30.Gompertz)
+> alpha.30.Gompertz <- alpha.30.Gompertz + mean(kappa.30.Gompertz)*beta.30.Gompertz
+> kappa.30.Gompertz <- kappa.30.Gompertz - mean(kappa.30.Gompertz)
+> 
+> par(mfrow=c(1,1))
+> plot(alpha.LC,ylim=range(alpha.LC), ylab="alpha", xlab="x", col="blue", type="l")
+> lines(alpha.Gompertz,col="black", type="l")
+> lines(alpha.30.Gompertz,col="red", type="l")
+>
+\end{verbatim}
+The parameter estimates on the complete set are
+\begin{equation}
+b = 1.104658 \times 10^{-4} \quad \text{and} \quad c = 1.087388 
+\end{equation}
+and the plot is given in Figure \ref{Figure_Question15}.
+
+\begin{center}
+	\begin{figure}[H]
+		
+		\includegraphics[scale=0.75]{NL3_Question16.png}
+		
+		\caption{Coefficient $\alpha_x$ estimated by LC (blue line),  Gompertz (black line) and Gompertz ages 30+ (red line) }
+		\label{Figure_Question15}
+		
+	\end{figure}
+\end{center}
+
 
 \subsection*{Q17}
+Using the code in the assignment we obtain the Figures from the assignment.
 
+\begin{verbatim}
+g4 <- glm(Dxt.vec~x1*t-x1-1+offset(lnExt.vec), poisson, subset=x1>=30)
+b <- 1e5*exp(head(coef(g4),nyears)); c <- 100*(exp(tail(coef(g4),nyears))-1)
+par(mfrow=c(1,2))
+plot(b, xlab="t", ylab="b*100000", ylim=c(0,10), type="l", yaxp=c(0,10,2),
+main="Gompertz parameters b;\nages 30+")
+plot(c, xlab="t", ylab="c-1 in %", ylim=c(9,12), type="l",
+yaxp=c(9,12,3), main="Gompertz parameters c")
+\end{verbatim}
 
-\subsection*{Q18}
+To extrapolate the trend in the graph of $b_t$ and determine the time $t$ for which $b_t = 0$ we use regression of $b_t$ against $t$ and solve for $b_t = 0$ in \verb|R|. We have the following output
+\begin{verbatim}
+> t1 <- 1:nyears
+> b.lm <- lm(b~t1,subset = t1>20)
+> b.lm$coefficients
+(Intercept)          t1 
+9.6359275  -0.1411485 
+> 
+> t.intersect <- -b.lm$coefficients[1]/b.lm$coefficients[2]
+> t.intersect
+(Intercept) 
+68.26802 
+>
+\end{verbatim}
+At time $t=68.27$ we have that $b_t = 0$. A negative $b_t$ implies that there is a negative mortality rate and no people will be dying.
+
+subsection*{Q18}
+
+Using the following code:
+\begin{verbatim}
+b <- b/1e5; c<- c/100 + 1;
+log.mortality <-function(x){ log(b) + 	x * log(c)}
+
+plot(log.mortality(65), xlab="t", ylab="Log-mortality", type="l",col="black",ylim=c(-5,0))
+lines(log.mortality(75), col="red",  type="l")
+lines(log.mortality(85), col="blue", type="l")
+\end{verbatim}
+
+we obtain Figure \ref{Figure_Question18}. There is a shift of the curve upwards for higher ages and for values of $t$ larger then 30 the log-mortality is descending with $t$.
+
+\begin{center}
+	\begin{figure}[H]
+		
+		\includegraphics[scale=0.60]{NL3_Question18.png}
+		
+		\caption{Log-mortality for ages 65 (black line), 75 (red line) and 85 (blue line)}
+		\label{Figure_Question18}
+		
+	\end{figure}
+\end{center}
 
 \end{document}
