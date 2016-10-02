@@ -31,6 +31,111 @@
 
 \maketitle
 
+\section*{Analyzing a bonus-malus system using GLM}
 
+\subsection*{Q1}
+
+\subsubsection*{a)}
+We are asked to check if the values in Table 9.8 from MART are correct. For this, we first run the code given in the exercise:
+
+\begin{verbatim}
+> rm(list=ls(all=TRUE)) ## First remove traces of previous sessions
+> fn <- "http://www1.fee.uva.nl/ke/act/people/kaas/Cars.txt"
+> Cars <- read.table(fn, header=TRUE)
+> Bminus1 <- Cars$B - 1; Bis14 <- as.numeric(Cars$B==14)
+> Cars$A <- as.factor(Cars$A); Cars$R <- as.factor(Cars$R)
+> Cars$M <- as.factor(Cars$M); Cars$U <- as.factor(Cars$U)
+> Cars$B <- as.factor(Cars$B); Cars$WW <- as.factor(Cars$WW)
+> ActualWt <- c(650,750,825,875,925,975,1025,1075,1175,1375,1600)
+> W <- log(ActualWt/650)[Cars$WW]
+> 
+> # GLM analysis
+> 
+> g1 <- glm(TotCl/Expo~R+A+U+W+Bminus1+Bis14, quasipoisson, wei=Expo, data=Cars)
+> g2 <- glm(TotCl/Expo~R+A+U+W+Bminus1+Bis14+M, quasipoisson, wei=Expo, data=Cars)
+> g3 <- glm(TotCl/Expo~R+A+U+W+B, quasipoisson, wei=Expo, data=Cars)
+> 
+> anova(g1,g2)
+Analysis of Deviance Table
+
+Model 1: TotCl/Expo ~ R + A + U + W + Bminus1 + Bis14
+Model 2: TotCl/Expo ~ R + A + U + W + Bminus1 + Bis14 + M
+  Resid. Df Resid. Dev Df Deviance
+1      7515   38616941            
+2      7513   38614965  2   1975.8
+> anova(g1,g3)
+Analysis of Deviance Table
+
+Model 1: TotCl/Expo ~ R + A + U + W + Bminus1 + Bis14
+Model 2: TotCl/Expo ~ R + A + U + W + B
+  Resid. Df Resid. Dev Df Deviance
+1      7515   38616941            
+2      7504   38544506 11    72435
+> 
+> # Multiplicative coefficients
+> options(digits=7)
+> exp(coef(g1)); exp(coef(g2)); exp(coef(g3))
+(Intercept)          R2          R3          A2          A3          U2           W
+524.3016583   1.0842682   1.1916130   0.4147224   0.6184468   1.3841303   2.3722083
+    Bminus1       Bis14 
+  0.8978647   1.1053665 
+(Intercept)          R2          R3          A2          A3          U2           W 
+522.6627527   1.0842767   1.1914111   0.4147232   0.6184538   1.3835062   2.3721668 
+    Bminus1       Bis14          M2          M3 
+  0.8978640   1.1053568   1.0073260   1.0014581   
+(Intercept)          R2          R3          A2          A3          U2           W 
+515.5320549   1.0843018   1.1916593   0.4143437   0.6178700   1.3841612   2.3722369
+         B2          B3          B4          B5          B6          B7          B8 
+  0.9111279   0.8275175   0.7403718   0.6842609   0.6088526   0.5416103   0.4489065 
+         B9         B10         B11         B12         B13         B14 
+  0.4151901   0.3888576   0.3459030   0.3143452   0.2832722   0.2773037 
+\end{verbatim}
+
+All coefficients can be checked individually against table 9.8 and are the same, except for models \verb|g1| and \verb|g2|, because the bonus malus risk factor is taken as numeric. This means that the factors in the table have been calculated from the factor for $B2$ to the power $B - 1$. The coefficient for \verb|Bminus1| differs only in the 7th decimal spot and the table is given with 4 decimals. This means that if we only need to check one of the two models. We do this by recalculating the values in \verb|R|.
+
+\begin{verbatim}
+> bm_class <- seq(1,13,1)
+> bm_coef <- exp((bm_class-1)*coef(g1)["Bminus1"])
+> bm_coef
+[1] 1.0000000 0.8978647 0.8061610 0.7238236 0.6498956 0.5835184 0.5239205
+[8] 0.4704098 0.4223643 0.3792260 0.3404937 0.3057173 0.2744927
+\end{verbatim}
+
+These values also correspond with those in table 9.8
+
+\subsubsection*{b)}
+Using the coefficients of \verb|g1|, \verb|g2| and \verb|g3|, compute the fitted values for the cell 4000.
+
+For this, we use the coefficients in \verb|R|. Recalculating these by hand would be rather pointless and is an exercise in working neatly over understanding the subject matter.
+
+\begin{verbatim}
+> # Observed value
+> g1$y[4000]
+4000 
+326.4545 
+> 
+> # Fitted value
+> fitted(g1)[4000]; fitted(g2)[4000]; fitted(g3)[4000]
+4000 
+634.0642 
+4000 
+636.416 
+4000 
+644.5283 
+\end{verbatim}
+
+What we can see is the all three GLM's have a fitted value that is about twice as large as the actual value. Not one of the models is close to the observed value, but the models are quite close together in their estimate.
+
+\subsubsection*{c)}
+
+We now explain the result of the following \verb|R|-code.
+
+\begin{verbatim}
+> g2$family$linkinv(model.matrix(g2)[4000,]%*%coef(g2))
+        [,1]
+[1,] 636.416
+\end{verbatim}
+
+This result is equal to the fitted value of the \verb|g2| model. This is no surprise, considering the code is equal to the definition of the fitted value for cell 4000. The inner product of the values of the risk factors and their corresponding coefficients gives the linear estimator for that cell, after which the \verb|linkinv| function is applied, which is the exponential function. This results in the fitted value.
 
 \end{document}

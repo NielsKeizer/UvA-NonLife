@@ -34,7 +34,6 @@ min(which(Cars$Expo==0))
 # a) Are the values in table 9.8 correct?
 # Upon direct comparison, we can see that the values are equal. Only the values for B3 up to B13 in the g1 and g2 models cannot be directly compared.
 # We calculate these through R.
-options(digits=4)
 bm_class <- seq(1,13,1)
 bm_coef <- exp((bm_class-1)*coef(g1)["Bminus1"])
 bm_coef
