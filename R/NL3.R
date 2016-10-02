@@ -90,3 +90,16 @@ test(9,23053)
 
 #Q3
 test(7515-7491,38616941-38408588)
+
+#Q4
+# In this question, we estimate the number of claims and the claimsizes seperately.
+
+g.nCl <- glm(nCl/Expo~R+A+U+W+Bminus1+Bis14, quasipoisson, wei=Expo, data=Cars)
+g.sCl <- glm(TotCl/nCl~R+A+U+W+Bminus1+Bis14, Gamma(link="log"), wei=nCl, data=Cars)
+
+g.direct <- glm(TotCl/Expo~R+A+U+W+Bminus1+Bis14, quasipoisson, wei=Expo, data=Cars)
+# We can combine the two models by adding their coefficients, because combining the two models would give a product of two exponential functions, which is the same as one exponential with the arguments summed.
+
+mult.coef <- exp(coef(g.nCl)+coef(g.sCl))
+direct.coef <- exp(coef(g.direct))
+mult.coef; direct.coef

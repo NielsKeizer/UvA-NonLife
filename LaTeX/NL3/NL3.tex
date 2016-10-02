@@ -249,8 +249,6 @@ Model 2: TotCl/Expo ~ R + A + U + WW + Bminus1 + Bis14
 
 This shows that allowing separate coefficients for the weight classes would not be an improvement.
 
-\end{document}
-
 \subsection*{Q3}
 
 To answer this question, we run the \verb|test| function defined earlier:
@@ -261,3 +259,29 @@ To answer this question, we run the \verb|test| function defined earlier:
 \end{verbatim}
 
 The interaction terms do improve the model significantly. It might be worthwhile to investigate which interaction terms give the most improvement, because there might be some interaction terms which are not significant by themselves.
+
+\subsection*{Q4}
+
+First we estimate the number of claims and the size per claim as described. We can combine the two models by adding their coefficients, because directly combining the two models will give a product of two exponentials, which is the same as one exponential with the arguments summed. We compare the resulting coefficients with a direct estimation.
+
+\begin{verbatim}
+> g.nCl <- glm(nCl/Expo~R+A+U+W+Bminus1+Bis14, quasipoisson, wei=Expo, data=Cars)
+> g.sCl <- glm(TotCl/nCl~R+A+U+W+Bminus1+Bis14, Gamma(link="log"), wei=nCl, data=Cars)
+> g.direct <- glm(TotCl/Expo~R+A+U+W+Bminus1+Bis14, quasipoisson, wei=Expo, data=Cars)
+> 
+> mult.coef <- exp(coef(g.nCl)+coef(g.sCl))
+> direct.coef <- exp(coef(g.direct))
+> mult.coef; direct.coef
+(Intercept)          R2          R3          A2          A3          U2 
+525.1107841   1.0856608   1.1901279   0.4134531   0.6145069   1.3823142 
+          W     Bminus1       Bis14 
+  2.3827096   0.8979376   1.1057074 
+(Intercept)          R2          R3          A2          A3          U2 
+524.3016583   1.0842682   1.1916130   0.4147224   0.6184468   1.3841303 
+          W     Bminus1       Bis14 
+  2.3722083   0.8978647   1.1053665 
+\end{verbatim}
+
+The resulting models have very similar results and attribute about the same amount of risk to each risk factor.
+
+\end{document}
