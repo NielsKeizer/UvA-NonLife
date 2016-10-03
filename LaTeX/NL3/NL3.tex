@@ -189,7 +189,7 @@ Running the code gives the following output
 [1] 30
 \end{verbatim}
 
-To find the optimal parameter estimates we run \verb|gg$coefficients| which outputs all parameter estimates. By inspection we see that the $\alpha_x$ paramters correspond to \verb|gg$coefficients[1:101]|, the $\beta_x$ parameters are \verb|gg$coefficients[102:202]| (in the ouput \verb|Mult(., t).x1| - \verb|Mult(., t).x101|) and the $\kappa_t$ parameters are \verb|gg$coefficients[203:260]| (in the output \verb|Mult(x, .).t1| - \verb|Mult(x, .).t58|). The optimal parameter estimates are therefore given by 
+To find the optimal parameter estimates we run \verb|gg$coefficients| which outputs all parameter estimates. By inspection we see that the $\alpha_x$ paramters correspond to \verb|gg$coefficients[1:101]|, the $\beta_x$ parameters are \verb|gg$coefficients[102:202]| (in the output \verb|Mult(., t).x1| - \verb|Mult(., t).x101|) and the $\kappa_t$ parameters are \verb|gg$coefficients[203:260]| (in the output \verb|Mult(x, .).t1| - \verb|Mult(x, .).t58|). The optimal parameter estimates are therefore given by 
 \begin{verbatim}
 alpha.gnm <- gg$coefficients[1:101]
 beta.gnm <- gg$coefficients[102:202]
