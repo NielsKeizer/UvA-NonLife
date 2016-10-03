@@ -103,7 +103,7 @@ kappa.glm <- kappa.glm * sum(beta.glm)
 
 # Q11
 
-abs(exp(log(Ext.vec[532])+alpha.glm[x[532]]+beta.glm[x[532]]*kappa.glm[t[532]])-fitted(g2)[532])<0.0001
+abs(exp(log(Ext.vec[532])+alpha.glm[x[532]]+beta.glm[x[532]]*kappa.glm[t[532]])-fitted(g2)[532])<0.001
 
 # Q12
 beta.glm <- beta.glm/sum(beta.glm)

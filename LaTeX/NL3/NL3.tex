@@ -37,7 +37,7 @@
 
 Assuming $\beta_\Sigma := \sum \beta_x \not = 0$ and the transformation
 \begin{equation}
-\alpha'_x  \leftarrow \alpha_x  + \beta_x \bar{\kappa}; \quad \kappa''_t \leftarrow \kappa_t \beta_\Sigma; \quad \beta'_x \leftarrow \frac{\beta_x}{\beta_\Sigma}; \quad \kappa'_t \leftarrow \kappa''_t  - \overline{\kappa''} \quad \forall x,t
+\alpha'_x  \leftarrow \alpha_x  + \beta_x \overline{\kappa}; \quad \kappa''_t \leftarrow \kappa_t \beta_\Sigma; \quad \beta'_x \leftarrow \frac{\beta_x}{\beta_\Sigma}; \quad \kappa'_t \leftarrow \kappa''_t  - \overline{\kappa''} \quad \forall x,t
 \end{equation}
 a straightforward substitution of this transformation shows that 
 \begin{eqnarray*}
@@ -46,7 +46,7 @@ a straightforward substitution of this transformation shows that
 		  &=& \exp \left (  \alpha_x + \beta_x \bar{\kappa} + \frac{\beta_x}{\beta_\Sigma} ( \kappa_t \beta_\Sigma - \overline{\kappa_t} \beta_\Sigma) \right ) \\
 		  &=& \exp \left ( \alpha_x + \beta_x \bar{\kappa} + \beta_x \kappa_t - \beta_x  \bar{\kappa}\right ) = \exp(\alpha_x + \beta_x \kappa_t)  = \mu_{xt}
 \end{eqnarray*}
-and together with $\bar{\kappa} = \frac{1}{T} \sum_{t=1}^T \kappa_t$ we have
+and together with $\bar{\kappa} = \frac{1}{T} \sum_{t=1}^T \kappa_t$ we have (assuming $\beta_\Sigma \not = 0$)
 \begin{equation}
 \sum_x \beta'_x = \sum_x \frac{\beta_x}{\beta_\Sigma} = \frac{1}{\beta_\Sigma} \sum_x \beta_x = \frac{1}{\beta_\Sigma} \beta_\Sigma = 1
 \end{equation}
@@ -84,8 +84,8 @@ Solving for $\kappa_t$ we find
 
 To find the $\alpha_x$ to minimize $\sum_{x,t} (\log m_{xt} - \alpha_x - \beta_x\kappa_t)^2$ we take the partial derivative with respect to $\alpha_x$ and equate to zero:
 \begin{equation}
-\frac{\partial}{\partial \alpha_x} \sum_{x',t} (\log m_{xt} - \alpha_x - \beta_x\kappa_t)^2
- = -2 \sum_{x',t} (\log m_{x't} - \alpha_{x'} - \beta_{x'} \kappa_t) \frac{\partial \alpha_{x'}}{\partial \alpha_{x}} = -2 \sum_t \left ( \log m_{xt} - \alpha_x - \beta_x \kappa_t \right ) = 0
+\frac{\partial}{\partial \alpha_x} \sum_{x',t} (\log m_{x't} - \alpha_{x'} - \beta_{x'} \kappa_t)^2
+ = -2 \sum_{x',t} (\log m_{x't} - \alpha_{x'} - \b	eta_{x'} \kappa_t) \frac{\partial \alpha_{x'}}{\partial \alpha_{x}} = -2 \sum_t \left ( \log m_{xt} - \alpha_x - \beta_x \kappa_t \right ) = 0
 \end{equation}
 where we used that $\frac{\partial \alpha_{x'}}{\partial \alpha_{x}} = 1$ if $x = x'$ and zero otherwise. Using $\sum_t \kappa_t = 0$ we have
 \begin{equation}
@@ -148,48 +148,48 @@ Running the code gives the following output
 +   gg <- gnm(Dxt.vec ~ 0 + offset(lnExt.vec) + x + Mult(x,t), family=poisson,
 +             mustart=start, trace=TRUE)
 + ) ## ~ 13 sec
-Initialising
-Initial Deviance = 100722.194038
-Running main iterations
-Iteration 1. Deviance = 39749.368321
-Iteration 2. Deviance = 25917.880223
-Iteration 3. Deviance = 23870.090768
-Iteration 4. Deviance = 23505.680116
-Iteration 5. Deviance = 23431.747520
-Iteration 6. Deviance = 23413.988074
-Iteration 7. Deviance = 23408.876090
-Iteration 8. Deviance = 23407.375544
-Iteration 9. Deviance = 23406.912470
-Iteration 10. Deviance = 23406.770225
-Iteration 11. Deviance = 23406.726007
-Iteration 12. Deviance = 23406.712305
-Iteration 13. Deviance = 23406.708046
-Iteration 14. Deviance = 23406.706724
-Iteration 15. Deviance = 23406.706313
-Iteration 16. Deviance = 23406.706185
-Iteration 17. Deviance = 23406.706146
-Iteration 18. Deviance = 23406.706133
-Iteration 19. Deviance = 23406.706129
-Iteration 20. Deviance = 23406.706128
-Iteration 21. Deviance = 23406.706128
-Iteration 22. Deviance = 23406.706128
-Iteration 23. Deviance = 23406.706128
-Iteration 24. Deviance = 23406.706128
-Iteration 25. Deviance = 23406.706128
-Iteration 26. Deviance = 23406.706128
-Iteration 27. Deviance = 23406.706128
-Iteration 28. Deviance = 23406.706128
-Iteration 29. Deviance = 23406.706128
-Iteration 30. Deviance = 23406.706128
-Done
-user  system elapsed 
+ Initialising
+ Initial Deviance = 100722.194038
+ Running main iterations
+ Iteration 1. Deviance = 39749.368321
+ Iteration 2. Deviance = 25917.880223
+ Iteration 3. Deviance = 23870.090768
+ Iteration 4. Deviance = 23505.680116
+ Iteration 5. Deviance = 23431.747520
+ Iteration 6. Deviance = 23413.988074
+ Iteration 7. Deviance = 23408.876090
+ Iteration 8. Deviance = 23407.375544
+ Iteration 9. Deviance = 23406.912470
+ Iteration 10. Deviance = 23406.770225
+ Iteration 11. Deviance = 23406.726007
+ Iteration 12. Deviance = 23406.712305
+ Iteration 13. Deviance = 23406.708046
+ Iteration 14. Deviance = 23406.706724
+ Iteration 15. Deviance = 23406.706313
+ Iteration 16. Deviance = 23406.706185
+ Iteration 17. Deviance = 23406.706146
+ Iteration 18. Deviance = 23406.706133
+ Iteration 19. Deviance = 23406.706129
+ Iteration 20. Deviance = 23406.706128
+ Iteration 21. Deviance = 23406.706128
+ Iteration 22. Deviance = 23406.706128
+ Iteration 23. Deviance = 23406.706128
+ Iteration 24. Deviance = 23406.706128
+ Iteration 25. Deviance = 23406.706128
+ Iteration 26. Deviance = 23406.706128
+ Iteration 27. Deviance = 23406.706128
+ Iteration 28. Deviance = 23406.706128
+ Iteration 29. Deviance = 23406.706128
+ Iteration 30. Deviance = 23406.706128
+ Done
+ user  system elapsed 
 11.09    0.33   11.56 
 > gg$deviance; gg$iter ## 23406.706128 30
 [1] 23406.71
 [1] 30
 \end{verbatim}
 
-To find the optimal parameter estimates we run \verb|gg$coefficients| which outputs all parameter estimates. By inspection we see that the $\alpha_x$ paramters correspond to \verb|gg$coefficients[1:101]|, the $\beta_x$ parameters are \verb|gg$coefficients[102:202]| (in the ouput \verb|Mult(., t).x1| - \verb|Mult(., t).x101|) and the $\kappa_t$ parameters are \verb|gg$coefficients[203:260]| (in the ouput \verb|Mult(x, .).t1| - \verb|Mult(x, .).t58|). The optimal parameter estimates are therefore given by 
+To find the optimal parameter estimates we run \verb|gg$coefficients| which outputs all parameter estimates. By inspection we see that the $\alpha_x$ paramters correspond to \verb|gg$coefficients[1:101]|, the $\beta_x$ parameters are \verb|gg$coefficients[102:202]| (in the ouput \verb|Mult(., t).x1| - \verb|Mult(., t).x101|) and the $\kappa_t$ parameters are \verb|gg$coefficients[203:260]| (in the output \verb|Mult(x, .).t1| - \verb|Mult(x, .).t58|). The optimal parameter estimates are therefore given by 
 \begin{verbatim}
 alpha.gnm <- gg$coefficients[1:101]
 beta.gnm <- gg$coefficients[102:202]
@@ -227,7 +227,7 @@ which gives Figure \ref{Figure_Question7}.
 \end{center}
 
 \subsection*{Q8}
-From equation (3) from the assignment we know that the relationship between $\alpha_x$ and $\mu_{xt}$ is given by $\mu_{xt} = \exp(\alpha_x + \beta_x \kappa_t)$. The increase from the log-mortality $\alpha_x$ (keeping all other parameters fixed) from $-8$ to $-7$ from age 16 to 18 implies that $\mu_{xt}$ increases by $\exp(1) \approx 2.72$. In the assignment about Gompertz and Makeham we already have seen this phenomenon and it is named the 'accident hump'.
+From equation (3) from the assignment we know that the relationship between $\alpha_x$ and $\mu_{xt}$ is given by $\mu_{xt} = \exp(\alpha_x + \beta_x \kappa_t)$. The increase from the log-mortality $\alpha_x$ (keeping all other parameters fixed) from $-8$ to $-7$ from age 16 to 18 implies that $\mu_{xt}$ increases by $\exp(1) \approx 2.72$. In the assignment about Gompertz and Makeham we have already seen this phenomenon and it is named the 'accident hump'.
 
 \subsection*{Q9}
 We execute the code and add one line to view the coefficients of the object \verb|g1|
@@ -286,7 +286,7 @@ exp(log(Ext.vec[532])+alpha.glm[x[532]]+beta.glm[x[532]]*kappa.glm[t[532]])
 and obtain the following output
 \begin{verbatim}
 > abs(exp(log(Ext.vec[532])+alpha.glm[x[532]]+
-		beta.glm[x[532]]*kappa.glm[t[532]])-fitted(g2)[532])<0.0001
+		beta.glm[x[532]]*kappa.glm[t[532]])-fitted(g2)[532])<0.001
 x10 
 TRUE
 \end{verbatim}
@@ -513,7 +513,7 @@ To extrapolate the trend in the graph of $b_t$ and determine the time $t$ for wh
 \end{verbatim}
 At time $t=68.27$ we have that $b_t = 0$. A negative $b_t$ implies that there is a negative mortality rate and no people will be dying.
 
-subsection*{Q18}
+\subsection*{Q18}
 
 Using the following code:
 \begin{verbatim}
