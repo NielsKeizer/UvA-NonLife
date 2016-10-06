@@ -63,4 +63,116 @@ future <- which(k>10)  ## TRUE for obs with calendar year after now
 valid <- which(Xij!=0) ## 1 for the non-zero obs, 0 for zero obs
 \end{verbatim}
 
+\subsection*{Q2}
+
+We then run the code from the assignment to find the \verb|alpha| and \verb|beta| estimates.
+
+\begin{verbatim}
+fi <- as.factor(i); fj <- as.factor(j); fk <- as.factor(k)
+xtabs(Xij~i+j)
+
+start <- Xij+0.5
+gg <- glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)
+
+cc <- exp(coef(gg)); round(cc, 3)
+alpha <- cc[1] * c(1,cc[2:10]); names(alpha)[1] <- "fi1"
+beta <- c(1,cc[11:15]); names(beta)[1] <- "fj1"
+alpha <- alpha * sum(beta); beta <- beta / sum(beta)
+round(alpha); round(beta, 3)
+\end{verbatim}
+
+Then we check the obtained values against the values of $x_i$ and $p_i$ from \href{http://www1.fee.uva.nl/ke/act/people/kaas/DeVylder78.pdf}{De Vylder}, Table 3, p. 253.
+
+\begin{verbatim}
+> options(digits=2)
+> beta
+  fj1   fj2   fj3   fj4   fj5   fj6 
+0.323 0.434 0.147 0.054 0.025 0.017 
+> alpha
+   fi1     fi2     fi3     fi4     fi5     fi6     fi7     fi8     fi9    fi10 
+270638  664133  790749  796639  798643  939137 1032577 1009003 1249258 1033618
+\end{verbatim}
+
+We conclude that the values are almost exactly equal, with exception of \verb|fi10|, which has a value of $1033618$. where $x_9$ is $1033617$.
+
+\subsection*{Q3}
+
+We execute the code from the assignment and get the following:
+
+\begin{verbatim}
+> start <- rep(1,length(Xij))
+> glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)$iter
+Error: no valid set of coefficients has been found: please supply starting values
+> start <- rep(10000,length(Xij))
+> glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)$iter
+Error: inner loop 1; cannot correct step size
+In addition: Warning message:
+step size truncated due to divergence 
+> start <- rep(100000,length(Xij))
+> glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)$iter
+[1] 9
+> start <- rep(mean(Xij),length(Xij))
+> glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)$iter
+[1] 10
+> start <- rep(mean(Xij[Xij>0]), length(Xij))
+> glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)$iter
+[1] 7
+> start <- fitted.values(glm(Xij~fi+fj,poisson,weights=valid))
+> glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)$iter
+[1] 4
+> start <- Xij+0.5
+> glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)$iter
+[1] 5
+> start <- Xij; start[Xij==0] <- 0.01
+> glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)$iter
+[1] 5
+> start <- pmax(Xij, 0.01)
+> glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)$iter
+[1] 5
+\end{verbatim}
+
+We see that starting with ones as values produces the same error as not supplying start values at all. Starting with values of $10000$ gives a divergence in the algorithm. Starting with values of $100000$ does not give divergence, but it does take 9 iterations. Starting with the mean of \verb|Xij| gives even more iterations, $10$, which is the highest for all glm's here. Initial values of the mean of the non zero values is slightly faster, but $7$ is still not as low as it can get. The lowest amount of iterations is obtained by starting with the coefficients of a glm that does allow for starting values $0$. The final three glm's all need 5 iterations. The final two even give exactly the same starting values and the one before that is comparable, as it adds $0.5$ to everything, thus preventing values equal to $0$.
+
+\subsection*{Q4}
+
+We generate a glm both without and with an inflation term and compare the results.
+
+\begin{verbatim}
+> gg <- glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)
+> ggg <- glm(Xij~fi+fj+k,gaussian(link=log),weights=valid,mustart=fitted(gg))
+> round(exp(coef(gg)),3); round(exp(coef(ggg)),3)
+(Intercept)         fi2         fi3         fi4         fi5         fi6         fi7         fi8 
+  87407.917       2.454       2.922       2.944       2.951       3.470       3.815       3.728 
+        fi9        fi10         fj2         fj3         fj4         fj5         fj6 
+      4.616       3.819       1.344       0.455       0.168       0.077       0.053 
+(Intercept)         fi2         fi3         fi4         fi5         fi6         fi7         fi8 
+  87407.896       2.454       2.922       2.944       2.951       3.470       3.815       3.728 
+        fi9        fi10         fj2         fj3         fj4         fj5         fj6           k 
+      4.616       3.819       1.344       0.455       0.168       0.077       0.053          NA 
+> gg$iter; ggg$iter
+[1] 5
+[1] 1
+> (gg$deviance - ggg$deviance)/ggg$deviance
+[1] 6.870721098e-14
+\end{verbatim}
+
+We find that the only difference is that the second glm reports that the coefficient for \verb|k| is \verb|NA|, which means that it did not need the variate. The second glm needed only one iteration to converge, which does not surprise us, seeing that its starting values are equal to the end result. The deviances are also pretty much the same. 
+
+\subsection*{Q5}
+
+We run the code from the assignment and get the following output in \verb|R|.
+
+\begin{verbatim}
+> xtabs(round(fitted(gg))*future~i+j)[6:10,2:6]
+    j
+i         2      3      4      5      6
+  6       0      0      0      0  16056
+  7       0      0      0  25666  17654
+  8       0      0  54669  25080  17251
+  9       0 183413  67686  31052  21358
+  10 448672 151753  56003  25692  17671
+\end{verbatim}
+
+These results and those from Table 2 of \href{http://www1.fee.uva.nl/ke/act/people/kaas/DeVylder78.pdf}{De Vylder} are equal.
+
 \end{document}
