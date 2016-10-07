@@ -78,3 +78,16 @@ gg$iter; ggg$iter
 
 # Q5
 xtabs(round(fitted(gg))*future~i+j)[6:10,2:6]
+# Einde Q5
+
+# Q6
+
+beta <- rep(1, 6)
+repeat
+{ beta.old <- beta
+alpha <- tapply(valid*Xij*beta[j],i,sum)/tapply(valid*beta[j]^2,i,sum)
+beta <- tapply(valid*Xij*alpha[i],j,sum)/tapply(valid*alpha[i]^2,j,sum)
+if (sum(abs((beta.old-beta)/beta)) < 1e-7) break ## out of the loop
+# cat(beta,"\n") ## to monitor the iteration process
+}
+round(xtabs(alpha[i]*beta[j]*future~i+j)[6:10,2:6])

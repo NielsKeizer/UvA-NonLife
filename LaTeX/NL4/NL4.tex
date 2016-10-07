@@ -5,6 +5,7 @@
 \usepackage{graphicx,epstopdf}              %% for .eps graphs
 \usepackage[official]{eurosym}              %% 1 \euro
 \usepackage[a4paper,margin=2cm]{geometry}   %% margins
+\usepackage{nameref}
 \usepackage{hyperref}                       %% hyperlinks to urls
 \usepackage{float}                    
 
@@ -174,5 +175,83 @@ i         2      3      4      5      6
 \end{verbatim}
 
 These results and those from Table 2 of \href{http://www1.fee.uva.nl/ke/act/people/kaas/DeVylder78.pdf}{De Vylder} are equal.
+
+\subsection*{Q6}\label{ssec:q6}
+
+The De Vijlder model is a multiplicative model $\alpha_{i}\beta_{j}$, which minimizes the least squares distance. Thus solving:
+
+\begin{equation}\label{eqn:de_vijlder}
+\min_{\alpha_{i},\beta_{j}} \sum_{i,j}w_{ij}\left(x_{ij} - \alpha_{i}\beta_{j}\right)^{2}
+\end{equation}
+
+We take the derivative of the sum with respect to $\alpha_{i'}$ and set it equal to zero.
+
+\begin{eqnarray}
+\frac{\partial}{\partial \alpha_{i'}} \sum_{i,j}w_{ij}\left(x_{ij} - \alpha_{i}\beta_{j}\right)^{2} &=& 0 \\
+\sum_{i,j}w_{ij}\frac{\partial}{\partial \alpha_{i'}}\left(x_{ij} - \alpha_{i}\beta_{j}\right)^{2} &=& 0 \\
+\sum_{i,j} w_{ij} \left(-2\beta_{j}\right) \left(x_{ij} - \alpha_{i}\beta_{j}\right) \delta_{i i'} &=& 0 \\
+\sum_{j} w_{i'j} \left(-2\beta_{j}\right) \left(x_{i'j} - \alpha_{i'}\beta_{j}\right) &=& 0 \\
+\alpha_{i} \sum_{j} w_{ij} \beta_{j}^{2} &=& \sum_{j} w_{ij}  x_{ij} \beta_{j}\\
+\alpha_{i} &=& \frac{\sum_{j} w_{ij} x_{ij} \beta_{j}}{\sum_{j} w_{ij} \beta_{j}^{2}} \label{eqn:de_vijlder_result}
+\end{eqnarray}
+
+In the derivation above, we used that $ \frac{\partial \alpha_{i}}{\partial \alpha_{i'}} = \delta_{i i'} $, which is $1$ when $i = i'$, $0$ otherwise. Afterwards, we replaced $i'$ by $i$, for easier reading. Because equation \ref{eqn:de_vijlder} is symmetric in $\alpha_{i}$ and $\beta_{j}$, we can exchange them in equation \ref{eqn:de_vijlder_result} to obtain:
+
+\begin{equation}
+\beta_{j} = \frac{\sum_{i} w_{ij} x_{ij} \alpha_{i}}{\sum_{j} w_{ij} \alpha_{i}^{2}} 
+\end{equation}
+
+Using equation \ref{eqn:de_vijlder_result}, we fill the dots and run the following code, including results:
+
+\begin{verbatim}
+> beta <- rep(1, 6)
+> repeat
++ { beta.old <- beta
++ alpha <- tapply(valid*Xij*beta[j],i,sum)/tapply(valid*beta[j]^2,i,sum)
++ beta <- tapply(valid*Xij*alpha[i],j,sum)/tapply(valid*alpha[i]^2,j,sum)
++ if (sum(abs((beta.old-beta)/beta)) < 1e-7) break ## out of the loop
++ # cat(beta,"\n") ## to monitor the iteration process
++ }
+> round(xtabs(alpha[i]*beta[j]*future~i+j)[6:10,2:6])
+    j
+i         2      3      4      5      6
+  6       0      0      0      0  16056
+  7       0      0      0  25666  17654
+  8       0      0  54669  25080  17251
+  9       0 183413  67686  31052  21358
+ 10  448672 151753  56003  25692  17671
+\end{verbatim}
+
+These results are exactly the same as the one obtained from \nameref{ssec:q6}.
+
+\subsection*{Q7}
+
+To find for which $x$ the Hoerl-curve has a minimum, we differentiate $\beta(x)$ w.r.t. $x$ and set equal to zero.
+
+\begin{eqnarray}
+\frac{d}{dx} \exp(\gamma x + \delta \log(x)) &=& 0 \\
+(\gamma + \frac{\delta}{x})\exp(\gamma x + \delta \log(x)) &=& 0 \\ 
+(\gamma + \frac{\delta}{x}) &=& 0 \\
+x &=& -\frac{\delta}{\gamma}
+\end{eqnarray}
+
+Because the logarithm only operates only strictly positive values, this means that there can only be a maximum when $\delta > 0$ and $\gamma < 0$. This result could also give a minimum, so we check if the second derivative is negative for this value of $x$. We get
+
+\begin{eqnarray}
+\frac{d^2}{dx^2} \exp(\gamma x + \delta \log(x)) &=& \frac{d}{dx} (\gamma + \frac{\delta}{x})\exp(\gamma x + \delta \log(x)) \\
+&=& ((\gamma + \frac{\delta}{x})^{2} - \frac{\delta}{x^{2}}) \exp(\gamma x + \delta \log(x)) \\
+&=& \frac{\delta}{(-\frac{\delta}{\gamma})^{2}} \exp(\gamma (-\frac{\delta}{\gamma}) + \delta \log(-\frac{\delta}{\gamma})) \\
+&=& \frac{\gamma}{\delta} \exp(\delta( \log(-\frac{\delta}{\gamma})-1))
+\end{eqnarray}
+
+which is indeed a negative under the restrictions for $\delta$ and $\gamma$.
+
+\begin{eqnarray}
+\lim_{x \to \infty} \frac{\beta(x+1)}{\beta(x)} &=& \lim_{x \to \infty} \frac{\exp(\gamma (x+1) + \delta \log(x+1))}{\exp(\gamma x + \delta \log(x))} \\
+&=& \lim_{x \to \infty}  \exp(\gamma + \delta(\log(x+1) - \log(x))) \\
+&=& \lim_{x \to \infty}  \exp(\gamma + \delta\log\left(\frac{x+1}{x}\right)) \\
+&=&\exp(\gamma + \delta\log\left(1\right)) \\
+&=&\exp(\gamma) = d
+\end{eqnarray}
 
 \end{document}
