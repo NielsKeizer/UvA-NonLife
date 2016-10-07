@@ -91,3 +91,13 @@ if (sum(abs((beta.old-beta)/beta)) < 1e-7) break ## out of the loop
 # cat(beta,"\n") ## to monitor the iteration process
 }
 round(xtabs(alpha[i]*beta[j]*future~i+j)[6:10,2:6])
+
+# Einde Q6
+
+# Q 8
+
+rm(list=ls(all=TRUE)) ## Discard old garbage
+TT <- 10; x.top <- 2; d <- .5
+gamma <- log(d); delta <- -x.top*gamma
+beta <- exp(gamma*(1:TT)+delta*log(1:TT))/exp(gamma)
+beta[1]==1

@@ -254,4 +254,21 @@ which is indeed a negative under the restrictions for $\delta$ and $\gamma$.
 &=&\exp(\gamma) = d
 \end{eqnarray}
 
+\subsection*{Q8}
+
+We fill the dots in the code and then check that \verb|beta[1]==1| holds.
+
+\begin{verbatim}
+> rm(list=ls(all=TRUE)) ## Discard old garbage
+> TT <- 10; x.top <- 2; d <- .5
+> gamma <- log(d); delta <- -x.top*gamma
+> beta <- exp(gamma*(1:TT)+delta*log(1:TT))/exp(gamma)
+> beta[1]==1
+[1] TRUE
+\end{verbatim}
+
+\subsection*{Q9}
+
+The \verb|Xij| values are all even numbers because the \verb|rpois| function only returns integers, after which they are multiplied by \verb|phi|, which is equal to two. An number is even when it is equal to an integer times two, therefore the \verb|Xij| values are all even.
+
 \end{document}
