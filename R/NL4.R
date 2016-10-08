@@ -94,10 +94,82 @@ round(xtabs(alpha[i]*beta[j]*future~i+j)[6:10,2:6])
 
 # Einde Q6
 
-# Q 8
+# Q8
 
 rm(list=ls(all=TRUE)) ## Discard old garbage
 TT <- 10; x.top <- 2; d <- .5
 gamma <- log(d); delta <- -x.top*gamma
 beta <- exp(gamma*(1:TT)+delta*log(1:TT))/exp(gamma)
 beta[1]==1
+
+# Einde Q8
+
+beta <- beta * runif(TT,.96,1.04)
+plot(beta)
+alpha <- 1.03^(1:TT) * c(1,1,1,1.05,.95,1.05,.95,1.05,.95,1)
+alpha <- 1000 * alpha / alpha[1] / beta[1]
+i <- rep(1:TT,TT:1); j <- sequence(TT:1); fi <- as.factor(i); fj <- as.factor(j)
+mu.ij <- alpha[i] * beta[j]
+phi <- 2; Xij <- phi * rpois(length(mu.ij), mu.ij/phi)
+
+xtabs(round(mu.ij)~i+j)
+round(xtabs(Xij~i+j))
+
+# Q10
+CL <- glm(Xij~fi+fj-1, quasipoisson)
+exp(coef(CL))
+
+Hoerl <- glm(Xij~fi+I(j-1)+log(j)-1, quasipoisson)
+
+round(coef(CL),3); round(coef(Hoerl),3)
+beta.CL <- exp(c(0,coef(CL)[(TT+1):(2*TT-1)]))
+beta.Hoerl <- exp(coef(Hoerl)[TT+1]*(0:(TT-1))) * (1:TT)^coef(Hoerl)[TT+2]
+round(rbind(beta.CL, beta.Hoerl), 4)
+plot(beta.CL); points(beta.Hoerl, col="red")
+
+scale <- CL$deviance/CL$df.residual
+Delta.Dev.Sc <- (Hoerl$deviance - CL$deviance)/scale
+Delta.df <- Hoerl$df.residual - CL$df.residual
+reject <- Delta.Dev.Sc > qchisq(0.95, Delta.df)
+cat("The Hoerl model", ifelse(reject, "is", "is not"), "rejected",
+    "since the scaled deviance gained by CL is", round(Delta.Dev.Sc,1),
+    "\nwith", Delta.df, "extra parameters.\n")
+# Q11
+anova(Hoerl,CL, test = "Chisq")
+# Einde Q11
+
+# Q12
+rm(list=ls(all=TRUE)) ## Discard old garbage
+Xij <- c(232,106,35,16,2, 258,115,56,27, 221,82,4, 359,71, 349)
+  i <- c( 1, 1, 1, 1,1, 2, 2, 2, 2, 3, 3,3, 4, 4, 5)
+  j <- c( 1, 2, 3, 4,5, 1, 2, 3, 4, 1, 2,3, 1, 2, 1)
+  fi <- as.factor(i); fj <- as.factor(j)
+xtabs(Xij~i+j)
+
+# First estimate both methods
+CL <- glm(Xij~fi+fj-1, quasipoisson)
+Hoerl <- glm(Xij~fi+I(j-1)+log(j)-1, quasipoisson)
+# Then we do an anlysis of deviance.
+scale <- CL$deviance/CL$df.residual
+Delta.Dev.Sc <- (Hoerl$deviance - CL$deviance)/scale
+Delta.df <- Hoerl$df.residual - CL$df.residual
+reject <- Delta.Dev.Sc > qchisq(0.95, Delta.df)
+cat("The Hoerl model", ifelse(reject, "is", "is not"), "rejected",
+    "since the scaled deviance gained by CL is", round(Delta.Dev.Sc,1),
+    "\nwith", Delta.df, "extra parameters.\n")
+# Visual inspection of the beta's
+TT <- 5
+beta.CL <- exp(c(0,coef(CL)[(TT+1):(2*TT-1)]))
+beta.Hoerl <- exp(coef(Hoerl)[TT+1]*(0:(TT-1))) * (1:TT)^coef(Hoerl)[TT+2]
+plot(beta.CL); points(beta.Hoerl, col="red")
+
+# Now try with a Hoerlcurve for the portfolio growth.
+Hoerl <- glm(Xij~I(i-1)+log(i)+fj-1, quasipoisson)
+# Then we do an anlysis of deviance.
+scale <- CL$deviance/CL$df.residual
+Delta.Dev.Sc <- (Hoerl$deviance - CL$deviance)/scale
+Delta.df <- Hoerl$df.residual - CL$df.residual
+reject <- Delta.Dev.Sc > qchisq(0.95, Delta.df)
+cat("The Hoerl model", ifelse(reject, "is", "is not"), "rejected",
+    "since the scaled deviance gained by CL is", round(Delta.Dev.Sc,1),
+    "\nwith", Delta.df, "extra parameters.\n")
