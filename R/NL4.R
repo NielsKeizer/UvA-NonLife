@@ -287,3 +287,36 @@ delta.dev.sc <- (Variate_j$deviance - CL$deviance)/phi
 delta.df <- Variate_j$df.residual - CL$df.residual
 reject <- delta.dev.sc > qchisq(0.95,delta.df)
 reject;delta.dev.sc;qchisq(0.95,delta.df)
+
+# Einde Q17
+
+# Q19
+
+# Hoerl method
+alpha.h <- exp(coef(Hoerl_j))[1]*c(1,exp(coef(Hoerl_j))[2:10])
+gamma <- coef(Hoerl_j)[11]; delta <- coef(Hoerl_j)[12]
+beta.h <- exp(gamma*(0:9) + delta*log(1:10))
+mu.past.h <- alpha.h[i]*beta.h[j]
+i.all <- rep(1:10,each=10)
+j.all <- rep(1:10,10)
+mu.all.h <- alpha.h[i.all]*beta.h[j.all]
+reserve.h <- sum(mu.all.h) - sum(mu.past.h)
+
+xtabs(round(mu.past.h,2)~i+j)
+xtabs(round(mu.all.h,2)~i.all+j.all)
+reserve.h
+
+# CL method
+alpha.cl <- exp(coef(CL))[1]*c(1,exp(coef(CL))[2:10])
+beta.cl <- c(1,exp(coef(CL))[11:19])
+alpha.cl <- alpha.cl*sum(beta.cl)
+beta.cl <- beta.cl/sum(beta.cl)
+mu.past.cl <- alpha.cl[i]*beta.cl[j]
+mu.all.cl <- alpha.cl[i.all]*beta.cl[j.all]
+reserve.cl <- sum(mu.all.cl) - sum(mu.past.cl)
+
+xtabs(round(mu.past.cl,2)~i+j)
+xtabs(round(mu.all.cl,2)~i.all+j.all)
+reserve.cl
+
+reserve.cl - reserve.h
