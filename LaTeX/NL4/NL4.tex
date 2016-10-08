@@ -756,4 +756,63 @@ i.all      1      2      3      4      5      6      7      8      9     10
 The difference between the estimates for both past and future and the estimates for the past are the estimates for the future. The estimates for the future are the expected claims for past years of origin and future development years, which are precisely the IBNR claims. The sum then gives the total expected IBNR claims, for which the insurer should hold a reserve.
 
 Although it is not a part of this question, we see that in this case, the chain ladder method is more prudent because the estimated reserve is higher, $1666.64$ vs. $1639.47$. A difference of $27.17$.
+
+\section{Zero adjusted geometric delays}
+
+\subsection*{Q20}
+
+Given that $\Pr[T=t] \propto (1-p)^{t}$, for $t > 0$, $t \in \mathbb{Z}$, we derive
+
+\begin{eqnarray}
+\Pr[T=t+1]/\Pr[T=t] &=& \frac{(1-p)^{t+1}}{(1-p)^{t}} \\
+&=& 1-p \\
+&=& \Pr[T=2]/\Pr[T=1]
+\end{eqnarray}
+
+which is independent on $t$. Therefore it is equal for all $t>0$, of which $t=1$ is a special case.
+
+We now consider an exponential($\lambda$) random variable  $U$, which determines when a claim is filed. $T = 0$ if $U \leq t_{0}$, but $T = \lceil U - t_{0} \rceil$. Also $\Pr[T=0] = P_{0}$. Then
+
+\begin{equation} \label{eqn:q20_t=0}
+\Pr[T=0] = \Pr[U \leq t_{0}] = \int_{0}^{t_{0}} \lambda e^{-\lambda u} du = 1 - e^{-\lambda t_{0}} = p_{0}
+\end{equation}
+
+gives a relation between $\lambda$, $ t_{0}$ and $p_{0}$. Also, since $\Pr[T=t] = \Pr[ \lceil U - t_{0} \rceil = t] = \Pr[t_{0} + t - 1< U \leq t_{0} +t]$ for $U > t_{0}$, we derive:
+
+\begin{eqnarray}
+\Pr[T=t] &=& \Pr[t_{0} + t - 1 < U \leq t_{0} +t] = \int_{t_{0} + t - 1}^{t_{0} +t} \lambda e^{-\lambda u} du = e^{-\lambda (t_{0} + t - 1)} - e^{-\lambda (t_{0} + t)}\\
+&=& e^{-\lambda (t_{0} + t)}(e^{\lambda}-1)
+\end{eqnarray}
+
+Then 
+
+\begin{equation}
+\Pr[T=t+1]/\Pr[T=t] = \frac{e^{-\lambda (t_{0}+t+1)}(e^{\lambda}-1)}{e^{-\lambda (t_{0} + t)}(e^{\lambda}-1)} = e^{-\lambda} = 1-p
+\end{equation}
+
+This means that $\lambda = -\log(1-p)$ and from equation \ref{eqn:q20_t=0} follows that $t_{0} = \frac{\log(1 - p_{0})}{\log(1-p)}$ via the following:
+
+\begin{eqnarray}
+1 - e^{-\lambda t_{0}} &=& p_{0} \\
+e^{-\lambda t_{0}} &=& 1 - p_{0} \\
+-\lambda t_{0} &=& \log(1 - p_{0}) \\
+\log(1-p) t_{0} &=& \log(1 - p_{0}) \\
+t_{0} &=& \frac{\log(1 - p_{0})}{\log(1-p)}
+\end{eqnarray}
+
+Since $\log(1-p)$ is monotonically decreasing and negative for $0 \leq p < 1$, this implies that $t_{0} > 1 $ if and only if $p > p_{0}$.
+
+We solve the following equation:
+
+\begin{eqnarray}
+\Pr[T=0] &=& \Pr[T=1] \\
+1 - e^{-\lambda t_{0}} &=& e^{-\lambda (t_{0} + 1)}(e^{\lambda}-1) \\
+1 &=& e^{-\lambda t_{0}}e^{-\lambda}(e^{\lambda}-1) + e^{-\lambda t_{0}} \\
+e^{\lambda t_{0}} &=& e^{-\lambda}(e^{\lambda}-1) +1 \\
+e^{\lambda t_{0}} &=& 2 - e^{-\lambda} \\
+t_{0} &=& \frac{\log(2 - e^{-\lambda})}{\lambda } = t_{0}^{*}
+\end{eqnarray} 
+
+For $t = 0$, $\Pr[T=t]$ is a monotonically increasing function in $t_{0}$. For $t = 1$, $\Pr[T=t]$ is a monotonically decreasing function in $t_{0}$. When $t_{0}= t_{0}^{*}$, the two are equal. When $t_{0}< t_{0}^{*}$, $\Pr[T=0] < \Pr[T=1]$, thus $\Pr[T=1]$ is maximal and when $t_{0} > t_{0}^{*}$, $\Pr[T=0] > \Pr[T=1]$, thus $\Pr[T=0]$ is maximal.
+
 \end{document}
