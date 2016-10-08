@@ -394,4 +394,70 @@ with 2 extra parameters.
 
 We conclude that the CL model is not an improvement over the Hoerl model for the portfolio growth.
 
+\section{Separation methods; calendar year}
+
+\subsection*{Q13}
+
+First we run the code from the assignment to generate the chain ladder and threeway models.
+
+\begin{verbatim}
+rm(list=ls(all=TRUE)) ## Discard old garbage
+Xij <- scan(n=36)
+156 37  6  5 3 2 1 0
+154 42  8  5 6 3 0
+178 63 14  5 3 1
+198 56 13 11 2
+206 49  9  5
+250 85 28
+252 44
+221
+TT <- trunc(sqrt(2*length(Xij)))
+i <- rep(1:TT, TT:1); j <- sequence(TT:1); k <- i+j-1
+fi <- as.factor(i); fj <- as.factor(j); fk <- as.factor(k)
+
+CL <- glm(Xij~fi+fj, poisson)
+Threeway <- glm(Xij~fi+fj+fk, poisson)
+anova(CL, Threeway)
+round(qchisq(0.95, c(21,15,6)),1)
+\end{verbatim}
+
+We then extract \verb|alpha| and \verb|beta| from the vector of coefficients of \verb|CL| and print the square of the fitted values.
+
+\begin{verbatim}
+> cc <- exp(coef(CL))
+> alpha <- cc[1] * c(1,cc[2:TT]); names(alpha)[1] <- "fi1"
+> beta <- c(1,cc[(TT+1):(2*TT-1)]); names(beta)[1] <- "fj1"
+> alpha <- alpha * sum(beta); beta <- beta / sum(beta)
+> round(alpha); round(beta, 3)
+fi1 fi2 fi3 fi4 fi5 fi6 fi7 fi8 
+210 218 265 283 276 382 328 311 
+  fj1   fj2   fj3   fj4   fj5   fj6   fj7   fj8 
+0.711 0.192 0.048 0.025 0.014 0.009 0.002 0.000 
+> round(alpha%o%beta,3)
+        fj1    fj2    fj3   fj4   fj5   fj6   fj7 fj8
+fi1 149.206 40.245 10.025 5.201 3.013 1.819 0.491   0
+fi2 154.890 41.778 10.407 5.399 3.128 1.888 0.509   0
+fi3 188.013 50.712 12.633 6.553 3.797 2.292 0.618   0
+fi4 201.154 54.257 13.516 7.012 4.062 2.453 0.661   0
+fi5 196.096 52.893 13.176 6.835 3.960 2.391 0.645   0
+fi6 271.520 73.236 18.244 9.464 5.483 3.310 0.893   0
+fi7 233.121 62.879 15.664 8.126 4.708 2.842 0.767   0
+fi8 221.000 59.610 14.849 7.703 4.463 2.695 0.727   0
+\end{verbatim}
+
+The last column is equal to zero due to the marginal totals property, which states that the row and column sums of the observed and the fitted values must be equal. The observed values in column $8$ are zero, therefore the fitted values are $0$ as well.
+
+\subsection*{Q14}
+
+We generate the Arithmetic Separation method with the following \verb|R|-code:
+
+\begin{verbatim}
+> AS <- glm(Xij~fj+fk, poisson)
+> exp(coef(AS)["(Intercept)"])
+(Intercept) 
+156 
+\end{verbatim}
+
+For the Arithmetic Separation method, the marginal totals property also holds, in this case for the columns sums and the diagonal sums with equal \verb|k|. Because the top left observation is the only cell in the diagonal with \verb|k| value $1$, the fitted value (which for the top left observation is the exponent of the intercept) must be equal to the observed value.
+
 \end{document}

@@ -77,7 +77,7 @@ gg$iter; ggg$iter
 # Einde Q4
 
 # Q5
-xtabs(round(fitted(gg))*future~i+j)[6:10,2:6]
+xtabs(round(fitted(gg))*future~i+j)[6:10,2:6])
 # Einde Q5
 
 # Q6
@@ -90,7 +90,7 @@ beta <- tapply(valid*Xij*alpha[i],j,sum)/tapply(valid*alpha[i]^2,j,sum)
 if (sum(abs((beta.old-beta)/beta)) < 1e-7) break ## out of the loop
 # cat(beta,"\n") ## to monitor the iteration process
 }
-round(xtabs(alpha[i]*beta[j]*future~i+j)[6:10,2:6])
+#round(xtabs(alpha[i]*beta[j]*future~i+j)[6:10,2:6])
 
 # Einde Q6
 
@@ -173,3 +173,47 @@ reject <- Delta.Dev.Sc > qchisq(0.95, Delta.df)
 cat("The Hoerl model", ifelse(reject, "is", "is not"), "rejected",
     "since the scaled deviance gained by CL is", round(Delta.Dev.Sc,1),
     "\nwith", Delta.df, "extra parameters.\n")
+
+# Einde Q12
+
+rm(list=ls(all=TRUE)) ## Discard old garbage
+Xij <- scan(n=36)
+156 37  6  5 3 2 1 0
+154 42  8  5 6 3 0
+178 63 14  5 3 1
+198 56 13 11 2
+206 49  9  5
+250 85 28
+252 44
+221
+TT <- trunc(sqrt(2*length(Xij)))
+i <- rep(1:TT, TT:1); j <- sequence(TT:1); k <- i+j-1
+fi <- as.factor(i); fj <- as.factor(j); fk <- as.factor(k)
+
+CL <- glm(Xij~fi+fj, poisson)
+Threeway <- glm(Xij~fi+fj+fk, poisson)
+anova(CL, Threeway)
+round(qchisq(0.95, c(21,15,6)),1)
+
+# Q13
+
+cc <- exp(coef(CL))
+alpha <- cc[1] * c(1,cc[2:TT]); names(alpha)[1] <- "fi1"
+beta <- c(1,cc[(TT+1):(2*TT-1)]); names(beta)[1] <- "fj1"
+alpha <- alpha * sum(beta); beta <- beta / sum(beta)
+round(alpha); round(beta, 3)
+round(alpha%o%beta,3)
+
+# Einde Q13
+
+# Q14
+
+AS <- glm(Xij~fj+fk, poisson)
+exp(coef(AS)["(Intercept)"])
+
+# Einde Q14
+
+cc <- exp(coef(AS))
+beta.AS <- c(1,cc[2:8])*cc[1]; gamma.AS <- c(1,cc[9:15])
+par(mfrow=c(1,2)); plot(gamma.AS); plot(log(gamma.AS))
+ab <- coef(lm(log(gamma.AS)~I(1:8)))
