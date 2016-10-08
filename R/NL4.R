@@ -217,3 +217,73 @@ cc <- exp(coef(AS))
 beta.AS <- c(1,cc[2:8])*cc[1]; gamma.AS <- c(1,cc[9:15])
 par(mfrow=c(1,2)); plot(gamma.AS); plot(log(gamma.AS))
 ab <- coef(lm(log(gamma.AS)~I(1:8)))
+
+# Q15
+gamma.extrapolated <- exp(ab[1]+(1:15)*ab[2])
+gammas <- gamma.extrapolated; gammas[1:8] <- gamma.AS
+jjj <- rep(1:8,8); kkk <- jjj + rep(1:8,each=8) - 1
+mm <- beta.AS[jjj]*gammas[kkk]
+round(matrix(mm,8,byrow=TRUE),3)
+
+par(mfrow=c(1,1));plot(log(gammas));lines(log(gamma.extrapolated), col="red")
+
+# Einde Q15
+
+# Q16
+cbind("AS"=AIC(AS), "CL"=AIC(CL), "Threeway"=AIC(Threeway))
+# Einde Q16
+
+# Q17
+
+rm(list=ls(all=TRUE)) ## Discard old garbage
+set.seed(841109) ## replace by your birthday in format yymmdd
+top <- 1+1.5*runif(1); decay <- .5 + runif(1)/5
+gamma <- log(decay); delta <- -top*gamma
+beta <- exp(gamma*(0:(10-1)) + delta*log(1:10))
+alpha <- 1.03^(1:10) * (.80+runif(10)/5)
+alpha <- 100 * alpha / alpha[1] / beta[1]
+i <- rep(1:10,10:1); j <- sequence(10:1)
+fi <- as.factor(i); fj <- as.factor(j)
+phi <- 1.1+runif(1)/3
+Xij <- round(phi * rpois(55, alpha[i] * beta[j]/phi))
+rm(phi,alpha,beta,gamma,delta,top,decay)
+Xij <- pmax(Xij,1)
+xtabs(Xij~i+j)
+anova(glm(Xij ~ i+j+log(i)+log(j)+fi+fj, quasipoisson)) ## for Q16
+rbind(1:10,round(qchisq(.95,1:10),1))
+# Fullest model
+CL <- glm(Xij ~ fi+fj, quasipoisson)
+phi <- CL$deviance/CL$df.residual
+phi
+
+# Hoerl curve in columns
+Hoerl_j <- glm(Xij ~ fi+I(j-1)+log(j), quasipoisson)
+anova(Hoerl_j,CL, test = "Chisq")
+delta.dev.sc <- (Hoerl_j$deviance - CL$deviance)/phi
+delta.df <- Hoerl_j$df.residual - CL$df.residual
+reject <- delta.dev.sc > qchisq(0.95,delta.df)
+reject;delta.dev.sc;qchisq(0.95,delta.df)
+
+# Hoerl curve in rows
+Hoerl_i <- glm(Xij ~ I(i-1)+log(i)+fj, quasipoisson)
+anova(Hoerl_i,CL, test = "Chisq")
+delta.dev.sc <- (Hoerl_i$deviance - CL$deviance)/phi
+delta.df <- Hoerl_i$df.residual - CL$df.residual
+reject <- delta.dev.sc > qchisq(0.95,delta.df)
+reject;delta.dev.sc;qchisq(0.95,delta.df)
+
+# Variate in rows
+Variate_i <- glm(Xij ~ i+fj, quasipoisson)
+anova(Variate_i,CL, test = "Chisq")
+delta.dev.sc <- (Variate_i$deviance - CL$deviance)/phi
+delta.df <- Variate_i$df.residual - CL$df.residual
+reject <- delta.dev.sc > qchisq(0.95,delta.df)
+reject;delta.dev.sc;qchisq(0.95,delta.df)
+
+# Variate in columns
+Variate_j <- glm(Xij ~ fi+j, quasipoisson)
+anova(Variate_j,CL, test = "Chisq")
+delta.dev.sc <- (Variate_j$deviance - CL$deviance)/phi
+delta.df <- Variate_j$df.residual - CL$df.residual
+reject <- delta.dev.sc > qchisq(0.95,delta.df)
+reject;delta.dev.sc;qchisq(0.95,delta.df)

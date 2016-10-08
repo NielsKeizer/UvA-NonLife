@@ -460,4 +460,210 @@ We generate the Arithmetic Separation method with the following \verb|R|-code:
 
 For the Arithmetic Separation method, the marginal totals property also holds, in this case for the columns sums and the diagonal sums with equal \verb|k|. Because the top left observation is the only cell in the diagonal with \verb|k| value $1$, the fitted value (which for the top left observation is the exponent of the intercept) must be equal to the observed value.
 
+\subsection*{Q15}
+
+We construct the both the fitted and extrapolated values and then generate the fitted values for the full IBNR-square. We use the code from the assignment as base and then fill the dots.
+\begin{verbatim}
+> gamma.extrapolated <- exp(ab[1]+(1:15)*ab[2])
+> gammas <- gamma.extrapolated; gammas[1:8] <- gamma.AS
+> jjj <- rep(1:8,8); kkk <- jjj + rep(1:8,each=8) - 1
+> mm <- beta.AS[jjj]*gammas[kkk]
+> round(matrix(mm,8,byrow=TRUE),3)
+        [,1]   [,2]   [,3]  [,4]  [,5]  [,6]  [,7] [,8]
+[1,] 156.000 39.137 10.237 5.563 3.138 1.972 0.547    0
+[2,] 151.863 44.211 12.159 5.702 3.569 2.205 0.453    0
+[3,] 171.552 52.513 12.464 6.485 3.992 1.823 0.570    0
+[4,] 203.766 53.828 14.177 7.253 3.301 2.294 0.613    0
+[5,] 208.869 61.225 15.854 5.997 4.154 2.470 0.660    0
+[6,] 237.572 68.469 13.110 7.547 4.471 2.659 0.711    0
+[7,] 265.681 56.618 16.497 8.124 4.814 2.863 0.765    0
+[8,] 219.697 71.245 17.759 8.746 5.182 3.082 0.824    0
+\end{verbatim}
+
+\subsection*{Q16}
+
+We use the \verb|AIC()| function in \verb|R| to calculate the AIC.
+
+\begin{verbatim}
+> cbind("AS"=AIC(AS), "CL"=AIC(CL), "Threeway"=AIC(Threeway))
+           AS       CL Threeway
+[1,] 233.5406 227.4894 226.5827
+\end{verbatim}
+
+The AIC for the Threeway model is the lowest, so with regards to the AIC, the Threeway model is the best fit for this data.
+
+\section{Forecasting IBNR-claims}
+
+\subsection*{Q17}
+
+We start by running the code from the assignment. As seed, we use the birthday of Niels Keizer.
+
+\begin{verbatim}
+> rm(list=ls(all=TRUE)) ## Discard old garbage
+> set.seed(841109) ## replace by your birthday in format yymmdd
+> top <- 1+1.5*runif(1); decay <- .5 + runif(1)/5
+> gamma <- log(decay); delta <- -top*gamma
+> beta <- exp(gamma*(0:(10-1)) + delta*log(1:10))
+> alpha <- 1.03^(1:10) * (.80+runif(10)/5)
+> alpha <- 100 * alpha / alpha[1] / beta[1]
+> i <- rep(1:10,10:1); j <- sequence(10:1)
+> fi <- as.factor(i); fj <- as.factor(j)
+> phi <- 1.1+runif(1)/3
+> Xij <- round(phi * rpois(55, alpha[i] * beta[j]/phi))
+> rm(phi,alpha,beta,gamma,delta,top,decay)
+> Xij <- pmax(Xij,1)
+> xtabs(Xij~i+j)
+    j
+i      1   2   3   4   5   6   7   8   9  10
+  1   95 114 101  67  67  36  31  13  11  10
+  2   88 116 115  78  59  34  18  19   5   0
+  3   93 130  94  74  53  34  17  24   0   0
+  4   94 120 107  98  52  40  26   0   0   0
+  5   69 102  90  75  52  36   0   0   0   0
+  6   91 138 106  77  66   0   0   0   0   0
+  7   97 118 108  80   0   0   0   0   0   0
+  8  109 117 110   0   0   0   0   0   0   0
+  9  102 130   0   0   0   0   0   0   0   0
+ 10  133   0   0   0   0   0   0   0   0   0
+> anova(glm(Xij ~ i+j+log(i)+log(j)+fi+fj, quasipoisson)) ## for Q16
+Analysis of Deviance Table
+
+Model: quasipoisson, link: log
+
+Response: Xij
+
+Terms added sequentially (first to last)
+
+
+       Df Deviance Resid. Df Resid. Dev
+NULL                      54    1226.48
+i       1   275.65        53     950.83
+j       1   671.86        52     278.97
+log(i)  1     0.14        51     278.83
+log(j)  1   224.53        50      54.30
+fi      7    17.29        43      37.01
+fj      7     6.22        36      30.79
+> rbind(1:10,round(qchisq(.95,1:10),1))
+     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+[1,]  1.0    2  3.0  4.0  5.0  6.0  7.0  8.0  9.0  10.0
+[2,]  3.8    6  7.8  9.5 11.1 12.6 14.1 15.5 16.9  18.3
+\end{verbatim}
+
+From the \verb|anova()| call above, we can already see which covariates give the largest reductions in deviance. This gives us an idea of what covariates to use in the 'best' model. For this, we need to do an analysis of deviance. The estimate $\hat{\phi}$ for the dispersion parameter $\phi$ is chosen as the residual deviance divided by the residual degrees of freedom of the 'fullest' model. We calculate this in \verb|R|.
+
+\begin{verbatim}
+> # Fullest model
+> CL <- glm(Xij ~ fi+fj, quasipoisson)
+> phi <- CL$deviance/CL$df.residual
+> phi
+[1] 0.8552915
+\end{verbatim}
+
+Thus $\hat{\phi} = 0,8553$. We then examine whether we can improve the CL model by replacing either \verb|fi| or \verb|fj| with a Hoerl pattern (or maybe both). From the anova call, we strongly suspect that introducing a Hoerl pattern in the columns might give an improvement. To check this, we perform an analysis of deviance.
+
+\begin{verbatim}
+> Hoerl_j <- glm(Xij ~ fi+I(j-1)+log(j), quasipoisson)
+> anova(Hoerl_j,CL, test = "Chisq")
+Analysis of Deviance Table
+
+Model 1: Xij ~ fi + I(j - 1) + log(j)
+Model 2: Xij ~ fi + fj
+  Resid. Df Resid. Dev Df Deviance Pr(>Chi)
+1        43     37.009                     
+2        36     30.790  7   6.2182   0.4041
+> delta.dev.sc <- (Hoerl_j$deviance - CL$deviance)/phi
+> delta.df <- Hoerl_j$df.residual - CL$df.residual
+> reject <- delta.dev.sc > qchisq(0.95,delta.df)
+> reject;delta.dev.sc;qchisq(0.95,delta.df)
+[1] FALSE
+[1] 7.270253
+[1] 14.06714
+\end{verbatim}
+
+The analysis above shows that adding the factors of \verb|j| as covariates over the Hoerl model, should give a scaled deviance improvement larger than $14.1$ to be significant. This is not the case, thus this Hoerl model is better than the chain ladder model.
+
+Then we check if we can describe the portfolio growth with a Hoerl curve over the chain ladder method.
+
+\begin{verbatim}
+> Hoerl_i <- glm(Xij ~ I(i-1)+log(i)+fj, quasipoisson)
+> anova(Hoerl_i,CL, test = "Chisq")
+Analysis of Deviance Table
+
+Model 1: Xij ~ I(i - 1) + log(i) + fj
+Model 2: Xij ~ fi + fj
+  Resid. Df Resid. Dev Df Deviance Pr(>Chi)   
+1        43     48.687                        
+2        36     30.790  7   17.897 0.004006 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> delta.dev.sc <- (Hoerl_i$deviance - CL$deviance)/phi
+> delta.df <- Hoerl_i$df.residual - CL$df.residual
+> reject <- delta.dev.sc > qchisq(0.95,delta.df)
+> reject;delta.dev.sc;qchisq(0.95,delta.df)
+[1] TRUE
+[1] 20.92474
+[1] 14.06714
+\end{verbatim}
+
+This analysis shows that the \verb|fi| covariates can not be replaced by a Hoerl curve. But maybe we can replace the covariates by a variate.
+
+\begin{verbatim}
+> Variate_i <- glm(Xij ~ i+fj, quasipoisson)
+> anova(Variate_i,CL, test = "Chisq")
+Analysis of Deviance Table
+
+Model 1: Xij ~ i + fj
+Model 2: Xij ~ fi + fj
+  Resid. Df Resid. Dev Df Deviance Pr(>Chi)   
+1        44      52.95                        
+2        36      30.79  8   22.159 0.001132 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> delta.dev.sc <- (Variate_i$deviance - CL$deviance)/phi
+> delta.df <- Variate_i$df.residual - CL$df.residual
+> reject <- delta.dev.sc > qchisq(0.95,delta.df)
+> reject;delta.dev.sc;qchisq(0.95,delta.df)
+[1] TRUE
+[1] 25.9086
+[1] 15.50731
+\end{verbatim}
+
+This analysis above shows that using the row factors over the variate is a significant improvement, thus using the row variate over its factors is rejected.
+
+Finally, we have not checked if using \verb|j| as a variate over \verb|fj| is an improvement. Considering the first \verb|anova()| call, we do not expect an improvement at all. We check to be absolutely sure...
+
+\begin{verbatim}
+> Variate_j <- glm(Xij ~ fi+j, quasipoisson)
+> anova(Variate_j,CL, test = "Chisq")
+Analysis of Deviance Table
+
+Model 1: Xij ~ fi + j
+Model 2: Xij ~ fi + fj
+  Resid. Df Resid. Dev Df Deviance  Pr(>Chi)    
+1        44     266.19                          
+2        36      30.79  8    235.4 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> delta.dev.sc <- (Variate_j$deviance - CL$deviance)/phi
+> delta.df <- Variate_j$df.residual - CL$df.residual
+> reject <- delta.dev.sc > qchisq(0.95,delta.df)
+> reject;delta.dev.sc;qchisq(0.95,delta.df)
+[1] TRUE
+[1] 275.2217
+[1] 15.50731
+\end{verbatim}
+
+Nope, definitely not an improvement. This means that our 'best' model uses factors for the years of origin and a Hoerl pattern for the development years.
+
+\subsection*{Q18}
+
+Generalized Linear Models have three characteristics. We will describe each of these characteristics for our 'best'
+model.
+\begin{enumerate}
+	\item The stochastic component. These are the \verb|Xij| variables, which have a quasi-Poisson distribution.
+	\item The systematic component. These are the linear predictors. A sum of products of the regressors and the coefficients of those regressors, linear in the coefficients. In our 'best' model, the regressors are the factors of the rows (or row dummies), the column value (minus 1) and the logarithm of the column value. The coefficients are determined by the \verb|glm()| call in \verb|R|.
+	\item The link function. Because we consider this as a multiplicative model, we use the logarithm. This function also happens to be the canonical link function of a model with a quasi-Poisson stochastic component.
+\end{enumerate}
+
+
 \end{document}
