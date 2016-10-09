@@ -320,3 +320,13 @@ xtabs(round(mu.all.cl,2)~i.all+j.all)
 reserve.cl
 
 reserve.cl - reserve.h
+
+# Q19 einde
+
+# Q21
+
+zero <- glm(Xij~fi+I(j==1)+I(j-2), poisson)
+Hoerl <- glm(Xij~fi+I(j-1)+log(j), poisson)
+xtabs(round(zero$fitted.values,2)~i+j)
+
+AIC(zero);AIC(Hoerl)

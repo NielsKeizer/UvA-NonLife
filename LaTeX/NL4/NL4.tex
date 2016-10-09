@@ -815,4 +815,68 @@ t_{0} &=& \frac{\log(2 - e^{-\lambda})}{\lambda } = t_{0}^{*}
 
 For $t = 0$, $\Pr[T=t]$ is a monotonically increasing function in $t_{0}$. For $t = 1$, $\Pr[T=t]$ is a monotonically decreasing function in $t_{0}$. When $t_{0}= t_{0}^{*}$, the two are equal. When $t_{0}< t_{0}^{*}$, $\Pr[T=0] < \Pr[T=1]$, thus $\Pr[T=1]$ is maximal and when $t_{0} > t_{0}^{*}$, $\Pr[T=0] > \Pr[T=1]$, thus $\Pr[T=0]$ is maximal.
 
+\subsection*{Q21}
+
+We consider a CL-model with Poisson claim numbers with expected value $\alpha_{i}\beta_{j}$. The total number of total claims in a year of origin is Poisson($\alpha_{i}$) distributed. A claim on a contract in year $i$ is filed after $j-1$ years. This is described by $\beta_{j}$, which follows a zero adjusted geometric delay. For the $\beta_{j}$'s, we derive the following:
+
+\begin{eqnarray}
+\beta_{1} &=& \Pr[T=0] = p_{0} \label{eqn:q20_beta_1} \\
+\beta_{j} &=& \Pr[T=j-1] = e^{-\lambda(t_{0}+j-1)}(e^{\lambda}-1)\\
+          &=& e^{--\log(1-p)(\frac{\log(1 - p_{0})}{\log(1-p)}+j-1)}(e^{-\log(1-p)}-1) \\
+          &=& e^{\log(1-p_{0}) +(j-1)\log(1-p)}(\frac{1}{1-p}-1) \\
+          &=& (1-p_{0})(1-p)^{(j-1)}\frac{p}{1-p} \\
+          &=& p(1-p)^{(j-2)}(1-p_{0}) \label{eqn:q20_beta_j}
+\end{eqnarray}
+
+The we find expressions for $p$ and $p_{0}$ in terms of $\beta_{1}$ and $\beta_{2}$. $p_{0} = \beta_{1}$, as derived above in equation \ref{eqn:q20_beta_1}. To find $p$, we use equation \ref{eqn:q20_beta_j} for $j=2$.
+
+\begin{eqnarray}
+\beta_{2} &=& p(1-\beta_{1}) \\
+p &=& \frac{\beta_{2}}{1-\beta_{1}}
+\end{eqnarray}
+
+A GLM specification for this would be the following. We know the claims are Poisson($\alpha_{i}$) distributed, so we use a GLM with Poisson errors. From the exercises above we estimate the $X_{ij}$'s by the following:
+
+\begin{equation}
+X_{ij} \approx \alpha_{i}\beta_{j}
+\end{equation}
+
+Because this is multiplicative, we use a logarithmic link to estimate the linear coefficients. This means that \begin{equation}
+\E[\log(X_{ij})] = \log(\alpha_{i}) + \log(\beta_{j})
+\end{equation}
+
+For the regressors of the $\alpha_{i}$, we choose the row dummies. Because $\beta_{1}$ does not follow the geometric delay, we use a dummy for column $1$. Further, if we take the logarithm of $\beta_{j}$ for $j>1$, we get
+
+\begin{equation}
+\log(\beta_{j}) = \log(p) + (j-2)\log(1-p) + \log(1-p_{0}) \mbox{,}
+\end{equation}
+
+which is linear in $j-2$. So as the second regressor for $\beta_{j}$, we take the numeric values of $j-2$. This gives us the following model description in \verb|R|:
+
+\begin{verbatim}
+> zero <- glm(Xij~fi+I(j==1)+I(j-2), poisson)
+> Hoerl <- glm(Xij~fi+I(j-1)+log(j), poisson)
+> xtabs(round(zero$fitted.values,2)~i+j)
+    j
+i         1      2      3      4      5      6      7      8      9     10
+  1   90.32 127.67  94.13  69.40  51.17  37.72  27.81  20.51  15.12  11.15
+  2   90.01 127.23  93.80  69.16  50.99  37.59  27.72  20.43  15.07   0.00
+  3   90.37 127.74  94.18  69.44  51.19  37.74  27.83  20.52   0.00   0.00
+  4   97.35 137.61 101.46  74.80  55.15  40.66  29.98   0.00   0.00   0.00
+  5   81.41 115.08  84.84  62.55  46.12  34.00   0.00   0.00   0.00   0.00
+  6   99.78 141.04 103.99  76.67  56.52   0.00   0.00   0.00   0.00   0.00
+  7   95.41 134.86  99.43  73.31   0.00   0.00   0.00   0.00   0.00   0.00
+  8   97.23 137.44 101.33   0.00   0.00   0.00   0.00   0.00   0.00   0.00
+  9   96.12 135.88   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00
+  10 133.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00   0.00
+> 
+> AIC(zero);AIC(Hoerl)
+[1] 419.5824
+[1] 388.3281
+\end{verbatim}
+
+According to the AIC, the Hoerl model is a better fit.
+
+From the coefficients of the \verb|zero| model, it is possible to estimate $\alpha_{i}$, $p_{0}$ and $p$. However, we are not asked to calculate this, so we dont.
+
 \end{document}
