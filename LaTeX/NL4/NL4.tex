@@ -142,14 +142,14 @@ We generate a glm both without and with an inflation term and compare the result
 > gg <- glm(Xij~fi+fj,gaussian(link=log),weights=valid,mustart=start)
 > ggg <- glm(Xij~fi+fj+k,gaussian(link=log),weights=valid,mustart=fitted(gg))
 > round(exp(coef(gg)),3); round(exp(coef(ggg)),3)
-(Intercept)         fi2         fi3         fi4         fi5         fi6         fi7         fi8 
-  87407.917       2.454       2.922       2.944       2.951       3.470       3.815       3.728 
-        fi9        fi10         fj2         fj3         fj4         fj5         fj6 
-      4.616       3.819       1.344       0.455       0.168       0.077       0.053 
-(Intercept)         fi2         fi3         fi4         fi5         fi6         fi7         fi8 
-  87407.896       2.454       2.922       2.944       2.951       3.470       3.815       3.728 
-        fi9        fi10         fj2         fj3         fj4         fj5         fj6           k 
-      4.616       3.819       1.344       0.455       0.168       0.077       0.053          NA 
+(Intercept)        fi2        fi3        fi4        fi5        fi6        fi7        fi8 
+  87407.917      2.454      2.922      2.944      2.951      3.470      3.815      3.728 
+        fi9       fi10        fj2        fj3        fj4        fj5        fj6 
+      4.616      3.819      1.344      0.455      0.168      0.077      0.053 
+(Intercept)        fi2        fi3        fi4        fi5        fi6        fi7        fi8 
+  87407.896      2.454      2.922      2.944      2.951      3.470      3.815      3.728 
+        fi9       fi10        fj2        fj3        fj4        fj5        fj6          k 
+      4.616      3.819      1.344      0.455      0.168      0.077      0.053         NA 
 > gg$iter; ggg$iter
 [1] 5
 [1] 1
@@ -237,16 +237,16 @@ To find for which $x$ the Hoerl-curve has a minimum, we differentiate $\beta(x)$
 x &=& -\frac{\delta}{\gamma}
 \end{eqnarray}
 
-Because the logarithm only operates only strictly positive values, this means that there can only be a maximum when $\delta > 0$ and $\gamma < 0$. This result could also give a minimum, so we check if the second derivative is negative for this value of $x$. We get
+Because the logarithm only operates only strictly positive values, this means that there can only be a minimum when $\delta > 0$ and $\gamma < 0$. This result could also give a maximum, so we check if the second derivative is positive for this value of $x$ (which would imply that we have a minimum). We get
 
 \begin{eqnarray}
-\frac{d^2}{dx^2} \exp(\gamma x + \delta \log(x)) &=& \frac{d}{dx} (\gamma + \frac{\delta}{x})\exp(\gamma x + \delta \log(x)) \\
-&=& ((\gamma + \frac{\delta}{x})^{2} - \frac{\delta}{x^{2}}) \exp(\gamma x + \delta \log(x)) \\
+\frac{d^2}{dx^2} \exp(\gamma x + \delta \log(x))|_{x =-\delta / \gamma} &=& \frac{d}{dx}\left(  (\gamma + \frac{\delta}{x})\exp(\gamma x + \delta \log(x))\right)|_{x =-\delta / \gamma}  \\
+&=& ((\gamma + \frac{\delta}{x})^{2} - \frac{\delta}{x^{2}}) \exp(\gamma x + \delta \log(x))|_{x =-\delta / \gamma} \\
 &=& \frac{\delta}{(-\frac{\delta}{\gamma})^{2}} \exp(\gamma (-\frac{\delta}{\gamma}) + \delta \log(-\frac{\delta}{\gamma})) \\
-&=& \frac{\gamma}{\delta} \exp(\delta( \log(-\frac{\delta}{\gamma})-1))
+&=& \frac{\gamma^{2}}{\delta} \exp(\delta( \log(-\frac{\delta}{\gamma})-1))
 \end{eqnarray}
 
-which is indeed a negative under the restrictions for $\delta$ and $\gamma$.
+which is indeed positive under the restrictions for $\delta$ and $\gamma$.
 
 \begin{eqnarray}
 \lim_{x \to \infty} \frac{\beta(x+1)}{\beta(x)} &=& \lim_{x \to \infty} \frac{\exp(\gamma (x+1) + \delta \log(x+1))}{\exp(\gamma x + \delta \log(x))} \\
@@ -462,7 +462,7 @@ For the Arithmetic Separation method, the marginal totals property also holds, i
 
 \subsection*{Q15}
 
-We construct the both the fitted and extrapolated values and then generate the fitted values for the full IBNR-square. We use the code from the assignment as base and then fill the dots.
+We construct both the fitted and extrapolated values and then generate the fitted values for the full IBNR-square. We use the code from the assignment as base and then fill the dots.
 \begin{verbatim}
 > gamma.extrapolated <- exp(ab[1]+(1:15)*ab[2])
 > gammas <- gamma.extrapolated; gammas[1:8] <- gamma.AS
