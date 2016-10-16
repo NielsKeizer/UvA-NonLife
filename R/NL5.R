@@ -77,3 +77,26 @@ future <- xtabs(i_tot+j_tot-1>8~i_tot+j_tot)
 reserve.CL <- sum(pred.CL*future)
 reserve.BF <- sum(pred.BF*future)
 reserve.CL;reserve.BF
+
+# Q24
+
+sum(pred.BF*(1-future))
+sum(Xij)
+
+# Q25
+
+CLoff <- glm(Xij~offset(log(Expo))+fj, quasipoisson)
+
+# Einde Q25
+
+cc <- exp(coef(CLoff))
+betaoff <- cc[1] * c(1,cc[2:TT])
+pred.off <- ee %*% t(betaoff); round(pred.off, 4)
+round(cbind(rowSums(pred.BF * future),
+            rowSums(fits * future),
+            rowSums(pred.off * future)), 1)
+sum(pred.off * future)
+
+# Q26
+
+sum(pred.off * (1-future)); sum(Xij)

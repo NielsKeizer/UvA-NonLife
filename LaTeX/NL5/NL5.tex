@@ -206,4 +206,37 @@ We copy the code from the assignment and fill the dots to obtain the following i
 
 We see that the reserve from the CL method is higher than the reserve from the BF method.
 
+\subsection*{Q24}
+
+We check that the retrofitted values from the BF method are not equal to the total observed sum.
+
+\begin{verbatim}
+> sum(pred.BF*(1-future))
+[1] 1810.341
+> sum(Xij)
+[1] 2121
+\end{verbatim}
+
+This comes as no surprise, because the row coefficients where not determined using row dummies, in which case the marginal totals property would have held. The $\alpha$ parameters were replaced by exposure information and the $\beta$ parameters were kept, which means that the marginal totals property no longer holds and that the sums are not equal.
+
+\subsection*{Q25}
+
+We create a glm with coefficients proportional to the exposure for the rows.
+
+\begin{verbatim}
+CLoff <- glm(Xij~offset(log(Expo)+fj), quasipoisson)
+\end{verbatim}
+
+\subsection*{Q26}
+
+We check that the retrofitted values now sum to the total observed values:
+
+\begin{verbatim}
+> sum(pred.off * (1-future)); sum(Xij)
+[1] 2121
+[1] 2121
+\end{verbatim}
+
+This is because the only parameters that were fitted are the column dummies. The row parameters were explained by an offset equal to the exposure. Because no parameters were replaced and the column dummies were constructed in such a manner that the marginal totals property holds over the columns, the marginal totals property also holds over the total sum. Which is \verb|sum(Xij)|.
+
 \end{document}
