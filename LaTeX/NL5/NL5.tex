@@ -91,6 +91,33 @@ We run the code from the assignment and get the following result in \verb|R|.
 
 The statement in \verb|R| is a sum over the difference between the observed and the fitted values for equal \verb|j|. These are the column sums. Because the \verb|EE| method uses dummy variables for the columns, the marginal totals property holds for the column sums.
 
+\subsection*{Q20}
 
+We execute the following code in \verb|R|, where we replace the dots by \verb|sum(fits) - sum(Xij)|.
+
+\begin{verbatim}
+> reserves <- numeric(); lasts <- c(171,181,191,201,211,271,261,251,241,231,221)
+> for (last in lasts){
++   Xij[36] <- last
++   cc <- exp(coef(glm(Xij~fi+fj,quasipoisson)))
++   alpha <- c(1,cc[2:TT])*cc[1]; beta <- c(1,cc[(TT+1):(2*TT-1)])
++   fits <- (alpha %o% beta)
++   reserve <- sum(fits) - sum(Xij) ## the sum of the 'future' fitted values
++   reserves <- c(reserves, reserve) 
++ }
+> rbind(lasts, reserves=round(reserves))
+         [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]
+lasts     171  181  191  201  211  271  261  251  241   231   221
+reserves  132  136  140  144  148  172  168  164  160   156   152
+> plot(lasts, reserves); lines(range(lasts),range(reserves))
+\end{verbatim}
+
+This results in the following plot:
+
+\begin{figure}[H]\label{fig:q20}
+	\centering
+	\includegraphics[width=0.8\textwidth]{fig_q20.eps}
+	\caption{A plot of the chain ladder reserves against the last claim total.}
+\end{figure}
 
 \end{document}

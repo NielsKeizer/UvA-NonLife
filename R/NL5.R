@@ -30,7 +30,7 @@ future <- k_tot>8
 sum(CL$fitted.values)
 sum(alpha[i_tot]*beta[j_tot]*!future)
 sum(alpha[i_tot]*beta[j_tot]*future)
-
+sum(alpha %o% beta) - sum(Xij)
 # Einde Q18
 
 # Q19
@@ -39,3 +39,16 @@ round(tapply(fitted.values(EE)-Xij,j,sum),6)
 
 # Einde Q19
 
+# Q20
+
+reserves <- numeric(); lasts <- c(171,181,191,201,211,271,261,251,241,231,221)
+for (last in lasts){
+  Xij[36] <- last
+  cc <- exp(coef(glm(Xij~fi+fj,quasipoisson)))
+  alpha <- c(1,cc[2:TT])*cc[1]; beta <- c(1,cc[(TT+1):(2*TT-1)])
+  fits <- (alpha %o% beta)
+  reserve <- sum(fits) - sum(Xij) ## the sum of the 'future' fitted values
+  reserves <- c(reserves, reserve) 
+}
+rbind(lasts, reserves=round(reserves))
+plot(lasts, reserves); lines(range(lasts),range(reserves))
