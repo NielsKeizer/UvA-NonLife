@@ -33,5 +33,64 @@
 \maketitle
 
 
+\section{The Bornhuetter-Ferguson method}
+
+\subsection*{Q18}
+
+We repeat the code from the assignment, then we extract the \verb|alpha| and \verb|beta| values. Then we check if the sum over the past values obtained from \verb|alpha| and \verb|beta| equals the sum over the fitted values. Finally, we calculate the sum over the future estimated values.
+
+\begin{verbatim}
+> Xij <- scan(n=36)
+1: 156 37  6  5 3 2 1 0
+9: 154 42  8  5 6 3 0
+16: 178 63 14  5 3 1
+22: 198 56 13 11 2
+27: 206 49  9  5
+31: 250 85 28
+34: 252 44
+36: 221
+Read 36 items
+> TT <- 8; i <- rep(1:TT, TT:1); j <- sequence(TT:1); k <- i+j-1
+> fi <- as.factor(i); fj <- as.factor(j); fk <- as.factor(k)
+> ee <- c(28950,29754,31141,32443,34700,36268,37032,36637)
+> Expo <- rep(ee, TT:1)
+> CL <- glm(Xij~fi+fj, quasipoisson)
+> EE <- glm(Xij~offset(log(Expo))+fj, quasipoisson)
+> 
+> cc <- exp(coef(CL))
+> alpha <- cc[1] * c(1,cc[2:8]); names(alpha)[1] <- "fi1"
+> beta <- c(1,cc[9:15]); names(beta)[1] <- "fj1"
+> alpha <- alpha * sum(beta); beta <- beta / sum(beta)
+> 
+> i_tot <- rep(1:8, each=8)
+> j_tot <- rep(1:8,8)
+> k_tot <- i_tot+j_tot-1
+> future <- k_tot>8
+> 
+> sum(CL$fitted.values)
+[1] 2121
+> sum(alpha[i_tot]*beta[j_tot]*!future)
+[1] 2121
+> sum(alpha[i_tot]*beta[j_tot]*future)
+[1] 152.0312
+\end{verbatim}
+
+We see that the \verb|alpha| and \verb|beta| give the same past value as the model itself. We also see that we get the results that the assignment says we should get.
+
+The total of the fitted values for past observations equals \verb|sum(Xij)| because of the marginal totals property.
+
+\subsection*{Q19}
+
+We run the code from the assignment and get the following result in \verb|R|.
+
+\begin{verbatim}
+> round(tapply(fitted.values(EE)-Xij,j,sum),6)
+1 2 3 4 5 6 7 8 
+0 0 0 0 0 0 0 0 
+\end{verbatim}
+
+The statement in \verb|R| is a sum over the difference between the observed and the fitted values for equal \verb|j|. These are the column sums. Because the \verb|EE| method uses dummy variables for the columns, the marginal totals property holds for the column sums.
+
+
 
 \end{document}
