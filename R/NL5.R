@@ -52,3 +52,28 @@ for (last in lasts){
 }
 rbind(lasts, reserves=round(reserves))
 plot(lasts, reserves); lines(range(lasts),range(reserves))
+
+# Einde Q20
+
+# Q21
+
+lin_fit <- lm(reserves~lasts)
+summary(lin_fit)
+
+lin_fit$coefficients[1]
+sum(alpha[1:7] %o% beta)-sum(Xij[i<=7])
+
+# Einde Q21
+
+# Q22
+
+M <- ee / ee[1] * alpha[1]
+
+# Q23
+i_tot <- rep(1:8, each=8);j_tot <- rep(1:8,8)
+pred.CL <- alpha %*% t(beta); round(pred.CL, 4)
+pred.BF <- M %*% t(beta); round(pred.BF, 4)
+future <- xtabs(i_tot+j_tot-1>8~i_tot+j_tot)
+reserve.CL <- sum(pred.CL*future)
+reserve.BF <- sum(pred.BF*future)
+reserve.CL;reserve.BF
