@@ -1,3 +1,4 @@
+
 rm(list=ls(all=TRUE)); options(digits=6) ## housekeeping
 Xij <- scan(n=55) ## Data Taylor & Ashe (1983)
 357848 0766940 0610542 0482940 527326 574398 146342 139950 227229 067948
@@ -187,7 +188,6 @@ rm(list=ls(all=TRUE)); Xij <- scan(n=36)
 221
 TT <- 8; i <- rep(1:TT, TT:1); j <- sequence(TT:1); k <- i+j-1
 fi <- as.factor(i); fj <- as.factor(j); fk <- as.factor(k)
-
 ee <- c(28950,29754,26315,39442,38423,50268,44762,43541)
 Expo <- rep(ee, TT:1)
 
@@ -232,7 +232,7 @@ Three.off.without.fk <- glm(Xij~offset(log(Expo))+fj+fi, quasipoisson)
 anova(Three.off.without.fk, test="Chisq")
 
 options(digits=7); summary(Three.off) #dispersion is 1.46782
- summary(Three.off.without.fk) #dispersion is 1.62435 and deviance equal so lower scaled deviance
+summary(Three.off.without.fk) #dispersion is 1.62435 and deviance equal so lower scaled deviance
 
 #Question 15
 
@@ -275,3 +275,108 @@ options(digits=7); summary(special3)
 Expo1 <- c(28950,29754,36315,39442,38423,50268,44762,43541)[i]
 Three.off.adjusted <- glm(Xij~offset(log(Expo1))+fj+i.is.3+fi, quasipoisson)
 anova(Three.off.adjusted, test="Chisq")
+
+
+rm(list=ls(all=TRUE)) ## Discard old garbage
+
+# Q18
+Xij <- scan(n=36)
+156 37  6  5 3 2 1 0
+154 42  8  5 6 3 0
+178 63 14  5 3 1
+198 56 13 11 2
+206 49  9  5
+250 85 28
+252 44
+221
+TT <- 8; i <- rep(1:TT, TT:1); j <- sequence(TT:1); k <- i+j-1
+fi <- as.factor(i); fj <- as.factor(j); fk <- as.factor(k)
+ee <- c(28950,29754,31141,32443,34700,36268,37032,36637)
+Expo <- rep(ee, TT:1)
+CL <- glm(Xij~fi+fj, quasipoisson)
+EE <- glm(Xij~offset(log(Expo))+fj, quasipoisson)
+
+cc <- exp(coef(CL))
+alpha <- cc[1] * c(1,cc[2:8]); names(alpha)[1] <- "fi1"
+beta <- c(1,cc[9:15]); names(beta)[1] <- "fj1"
+alpha <- alpha * sum(beta); beta <- beta / sum(beta)
+
+i_tot <- rep(1:8, each=8)
+j_tot <- rep(1:8,8)
+k_tot <- i_tot+j_tot-1
+future <- k_tot>8
+
+sum(CL$fitted.values)
+sum(alpha[i_tot]*beta[j_tot]*!future)
+sum(alpha[i_tot]*beta[j_tot]*future)
+sum(alpha %o% beta) - sum(Xij)
+# Einde Q18
+
+# Q19
+
+round(tapply(fitted.values(EE)-Xij,j,sum),6)
+
+# Einde Q19
+
+# Q20
+
+reserves <- numeric(); lasts <- c(171,181,191,201,211,271,261,251,241,231,221)
+for (last in lasts){
+  Xij[36] <- last
+  cc <- exp(coef(glm(Xij~fi+fj,quasipoisson)))
+  alpha <- c(1,cc[2:TT])*cc[1]; beta <- c(1,cc[(TT+1):(2*TT-1)])
+  fits <- (alpha %o% beta)
+  reserve <- sum(fits) - sum(Xij) ## the sum of the 'future' fitted values
+  reserves <- c(reserves, reserve) 
+}
+rbind(lasts, reserves=round(reserves))
+plot(lasts, reserves); lines(range(lasts),range(reserves))
+
+# Einde Q20
+
+# Q21
+
+lin_fit <- lm(reserves~lasts)
+summary(lin_fit)
+
+lin_fit$coefficients[1]
+sum(alpha[1:7] %o% beta)-sum(Xij[i<=7])
+
+# Einde Q21
+
+# Q22
+
+M <- ee / ee[1] * alpha[1]
+
+# Q23
+i_tot <- rep(1:8, each=8);j_tot <- rep(1:8,8)
+pred.CL <- alpha %*% t(beta); round(pred.CL, 4)
+pred.BF <- M %*% t(beta); round(pred.BF, 4)
+future <- xtabs(i_tot+j_tot-1>8~i_tot+j_tot)
+reserve.CL <- sum(pred.CL*future)
+reserve.BF <- sum(pred.BF*future)
+reserve.CL;reserve.BF
+
+# Q24
+
+sum(pred.BF*(1-future))
+sum(Xij)
+
+# Q25
+
+CLoff <- glm(Xij~offset(log(Expo))+fj, quasipoisson)
+
+# Einde Q25
+
+cc <- exp(coef(CLoff))
+betaoff <- cc[1] * c(1,cc[2:TT])
+pred.off <- ee %*% t(betaoff); round(pred.off, 4)
+round(cbind(rowSums(pred.BF * future),
+            rowSums(fits * future),
+            rowSums(pred.off * future)), 1)
+sum(pred.off * future)
+
+# Q26
+
+sum(pred.off * (1-future)); sum(Xij)
+
