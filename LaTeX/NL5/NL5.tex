@@ -70,7 +70,6 @@ row1   row2   row3   row4   row5   row6   row7   row8   row9  row10
 col1   col2   col3   col4   col5   col6   col7   col8   col9  col10 
 1.0000 2.4906 2.6086 2.7899 1.5454 1.0833 0.9936 0.6740 1.0094 0.2516 
 > 
-> #Question 1
 > sum((Xij-fitted(Orig.CL))[i==5])
 [1] -0.000169636
 > 
@@ -82,7 +81,6 @@ As expected by the marginal totals property the sum is (very close to) zero.
 We enter the code given in the question and obtain the following output. 
 
 \begin{verbatim}
-> #Question 2
 > Orig.fits <- outer(alpha, beta); round(Orig.fits)
 col1    col2    col3    col4   col5   col6   col7   col8   col9  col10
 row1  270061  672617  704494  753438 417350 292571 268344 182035 272606  67948
@@ -100,7 +98,7 @@ row10 344014  856804  897410  959756 531636 372687 341826 231882 347255  86555
 [1] 18680856
 > 
 > row(Orig.fits)
-[,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+       [,1] [,2] [,3] [,4] [,5]  [,6] [,7] [,8] [,9] [,10]
 [1,]    1    1    1    1    1    1    1    1    1     1
 [2,]    2    2    2    2    2    2    2    2    2     2
 [3,]    3    3    3    3    3    3    3    3    3     3
@@ -112,16 +110,16 @@ row10 344014  856804  897410  959756 531636 372687 341826 231882 347255  86555
 [9,]    9    9    9    9    9    9    9    9    9     9
 [10,]   10   10   10   10   10   10   10   10   10    10
 > matrix(as.numeric(future),10)
-[,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-[1,]    0    0    0    0    0    0    0    0    0     0
-[2,]    0    0    0    0    0    0    0    0    0     1
-[3,]    0    0    0    0    0    0    0    0    1     1
-[4,]    0    0    0    0    0    0    0    1    1     1
-[5,]    0    0    0    0    0    0    1    1    1     1
-[6,]    0    0    0    0    0    1    1    1    1     1
-[7,]    0    0    0    0    1    1    1    1    1     1
-[8,]    0    0    0    1    1    1    1    1    1     1
-[9,]    0    0    1    1    1    1    1    1    1     1
+        [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+[1,]     0    0    0    0    0    0    0    0    0     0
+[2,]     0    0    0    0    0    0    0    0    0     1
+[3,]     0    0    0    0    0    0    0    0    1     1
+[4,]     0    0    0    0    0    0    0    1    1     1
+[5,]     0    0    0    0    0    0    1    1    1     1
+[6,]     0    0    0    0    0    1    1    1    1     1
+[7,]     0    0    0    0    1    1    1    1    1     1
+[8,]     0    0    0    1    1    1    1    1    1     1
+[9,]     0    0    1    1    1    1    1    1    1     1
 [10,]    0    1    1    1    1    1    1    1    1     1
 >
 \end{verbatim}
@@ -133,7 +131,6 @@ The command \verb|row(Orig.fits)| gives the row number of each entry of the matr
 We run the code and obtain the following output
 
 \begin{verbatim}
-> #Question 3
 > ij <- expand.grid(i=as.factor(1:TT),j=as.factor(1:TT))
 > ij[c(1,5,10,19,35,67),]
 i j
@@ -144,16 +141,16 @@ i j
 35  5 4
 67  7 7
 > mm <- matrix(predict(Orig.CL, ij, type="response"), TT); round(mm)
-[,1]    [,2]    [,3]    [,4]   [,5]   [,6]   [,7]   [,8]   [,9]  [,10]
-[1,] 270061  672617  704494  753438 417350 292571 268344 182035 272606  67948
-[2,] 376125  936779  981176 1049342 581260 407474 373732 253527 379669  94634
-[3,] 372325  927316  971264 1038741 575388 403358 369957 250966 375833  93678
-[4,] 366724  913365  956652 1023114 566731 397290 364391 247190 370179  92268
-[5,] 336287  837559  877254  938200 519695 364316 334148 226674 339456  84611
-[6,] 353798  881172  922933  987053 546756 383287 351548 238477 357132  89016
-[7,] 391842  975923 1022175 1093189 605548 424501 389349 264121 395534  98588
-[8,] 469648 1169707 1225143 1310258 725788 508792 466660 316566 474073 118164
-[9,] 390561  972733 1018834 1089616 603569 423113 388076 263257 394241  98266
+       [,1]    [,2]    [,3]    [,4]   [,5]   [,6]   [,7]   [,8]   [,9]  [,10]
+[1,]  270061  672617  704494  753438 417350 292571 268344 182035 272606  67948
+[2,]  376125  936779  981176 1049342 581260 407474 373732 253527 379669  94634
+[3,]  372325  927316  971264 1038741 575388 403358 369957 250966 375833  93678
+[4,]  366724  913365  956652 1023114 566731 397290 364391 247190 370179  92268
+[5,]  336287  837559  877254  938200 519695 364316 334148 226674 339456  84611
+[6,]  353798  881172  922933  987053 546756 383287 351548 238477 357132  89016
+[7,]  391842  975923 1022175 1093189 605548 424501 389349 264121 395534  98588
+[8,]  469648 1169707 1225143 1310258 725788 508792 466660 316566 474073 118164
+[9,]  390561  972733 1018834 1089616 603569 423113 388076 263257 394241  98266
 [10,] 344014  856804  897410  959756 531636 372687 341826 231882 347255  86555
 > sum(Xij); sum(mm[row(mm)+col(mm)-1<=TT])
 [1] 34358090
@@ -173,7 +170,6 @@ We run the code from the question and obtain the following output
 > p <- 2*TT-1; phi.P <- sum(Prs.resid^2)/(n-p)
 > Adj.Prs.resid <- Prs.resid * sqrt(n/(n-p))
 > 
-> #Question 4
 > birthday <- 820911; set.seed(birthday) ## do adjust this line
 > nBoot <- 1000; payments <- reserves <- n.neg <- numeric(nBoot)
 > for (boots in 1:nBoot){ ## running this will take 5--10 seconds
@@ -201,7 +197,6 @@ From the $55 \times 1000 = 5500$ pseudo-observations generated there are $140$ n
 To verify the statements in Remark 10.6.1 we let \verb|R| determine the minimum, maximum, mean and quantiles. The following output is obtained
 
 \begin{verbatim}
-> #Question 5
 > payments <- payments/1e6
 > mean(payments)
 [1] 18.9271
@@ -221,7 +216,6 @@ These results are in line with the statements in Remark 10.6.1. The minimum is 8
 Changing the method construct a predictive distribution of the IBNR-reserve to be held to a gamma error distribution using the Hints given in the assignment we obtain the following output in \verb|R|
 
 \begin{verbatim}
-> #Question 6
 > Orig.CL.Gamma <- glm(Xij~i+j, family=Gamma(link=log))
 > Prs.resid <- (Xij - fitted(Orig.CL.Gamma)) / fitted(Orig.CL.Gamma)
 > p <- 2*TT-1; phi.P <- sum(Prs.resid^2)/(n-p)
@@ -283,7 +277,6 @@ The two distributions are very similar in all cumulants and this is clear from t
 \subsection*{Q7}
 We compute in \verb|R| the relative difference and obtain the following output 
 \begin{verbatim}
-> #Question 7
 > coefs <- exp(coef(Orig.CL.Gamma)); round(coefs,4)
 (Intercept)  i2      i3      i4      i5      i6      i7      i8      i9      i10     j2 
 284798.2615  1.3733  1.3277  1.1799  1.2593  1.3139  1.4224  1.5871  1.3595  1.2079  2.4808 
@@ -311,8 +304,6 @@ The largest deviation is about 3 in a million. This shows that the $\alpha_i$ pa
 We run the code from the question and comparing \verb|CL| and \verb|Orig.CL| via the summary we obtain the following output 
 
 \begin{verbatim}
- 3.21291e+00 -1.84317e+00 -2.66958e+00 -1.26869e-02  8.81382e-01  3.90050e-01  5.67323e-02 -4.89973e-01 -4.76920e-02 -1.01521e-09 
- > #Question 8
  > Xij.1 <- as.vector(t(xtabs(Xij~i+j))) ## stored row-wise as usual
  > ii <- rep(1:TT, each=TT); jj <- rep(1:TT, TT); future <- ii+jj-1 > TT
  > ii <- as.factor(ii); jj <- as.factor(jj)
@@ -414,7 +405,6 @@ The same results are obtained with \verb|CL| and \verb|Orig.CL| since the output
 We run the code and obtain the following output 
 
 \begin{verbatim}
-> #Question 9
 > p <- 2*TT-1
 > phi.P <- sum((Xij - fitted(Orig.CL))^2 / fitted(Orig.CL))/(n-p) ## 1
 > phi <- CL$deviance/CL$df.residual ## 2
@@ -447,7 +437,6 @@ From the output we see that method 1,4,5,7 and 8 are Pearson estimates and 2,3 a
 Using a construction as proposed in the Hint we obtain the following output in \verb|R|
 
 \begin{verbatim}
-> #Question 10
 > mu.hat <- fitted(CL)*future
 > Cov.beta <- vcov(CL)
 Warning message:
@@ -483,7 +472,6 @@ which reproduces column 3 from Table 1 and 2 from England and Verrall (1999) exa
 We run the code and obtain the following output in \verb|R|
 
 \begin{verbatim}
-> #Question 11
 > rm(list=ls(all=TRUE)); Xij <- scan(n=36)
 1: 156 37 6 5 3 2 1 0
 9: 154 42 8 5 6 3 0
@@ -510,7 +498,6 @@ The index \verb|i| in \verb|ee[i]| runs over the sequence created by \verb|i <- 
 We fill in the dots and the output from \verb|R| is the following
 
 \begin{verbatim}
-> #Question 12
 > CL <- glm(Xij~fi+fj, quasipoisson) ## the Chain ladder model
 > EE <- glm(Xij~fj+offset(log(Expo)),quasipoisson) ## the Exposure model
 > scale <- CL$deviance / CL$df.residual ## mean-deviance estimate for phi
@@ -532,18 +519,17 @@ So the CL model is is not a significant improvement over the Exposure model. In 
 Constructing the vectors \verb|alpha, beta, M| and \verb|delta| as prescribed with \verb|sum(beta)=sum(delta)=1| we obtain the following output in \verb|R|
 
 \begin{verbatim}
-> #Question 13
 > xtabs(round(100*(fitted(CL) - fitted(EE))/fitted(CL))~i+j)
-j
-i     1   2   3   4   5   6   7   8
-1  -4  -5  -6  -6  -8 -12  -1   0
-2  -3  -4  -5  -5  -7 -11   0   0
-3  25  24  24  24  22  19   0   0
-4  -5  -6  -7  -7  -9   0   0   0
-5  -5  -6  -7  -7   0   0   0   0
-6   1   0  -1   0   0   0   0   0
-7  -3  -4   0   0   0   0   0   0
-8  -6   0   0   0   0   0   0   0
+  j
+i       1   2   3   4   5   6   7   8
+    1  -4  -5  -6  -6  -8 -12  -1   0
+    2  -3  -4  -5  -5  -7 -11   0   0
+    3  25  24  24  24  22  19   0   0
+    4  -5  -6  -7  -7  -9   0   0   0
+    5  -5  -6  -7  -7   0   0   0   0
+    6   1   0  -1   0   0   0   0   0
+    7  -3  -4   0   0   0   0   0   0
+    8  -6   0   0   0   0   0   0   0
 > round(coef(CL),2); round(coef(EE),2)
 (Intercept)  fi2    fi3     fi4     fi5     fi6     fi7     fi8     fj2     fj3     fj4 
 5.01	        0.04   0.23    0.30    0.27    0.60    0.45    0.39    -1.31   -2.70   -3.36 
@@ -563,8 +549,8 @@ fj5         fj6         fj7         fj8
 > M <- M*sum(delta); delta <- delta/sum(delta)
 > 
 > round(100*(alpha%o%beta-M%o%delta)/(alpha%o%beta))
-fj2 fj3 fj4 fj5 fj6 fj7 fj8
--4  -5  -6  -6  -8 -12  -1   0
+        fj2 fj3 fj4 fj5 fj6 fj7 fj8
+    -4  -5  -6  -6  -8 -12  -1   0
 fi2 -3  -4  -5  -5  -7 -11   0   1
 fi3 25  24  24  24  22  19  27  28
 fi4 -5  -6  -7  -7  -9 -13  -2  -1
@@ -587,7 +573,6 @@ We see from the output of \verb|round(100*(alpha%o%beta-M%o%delta)/(alpha%o%beta
 To compare the model with and without the term \verb|+fk| we do the anova call on the model with the \verb|+fk| term and without and obtain the following output in \verb|R|
 
 \begin{verbatim}
-> #Question 14
 > Three.off <- glm(Xij~offset(log(Expo))+fj+fi+fk, quasipoisson)
 > anova(Three.off, test="Chisq")
 Analysis of Deviance Table
@@ -724,7 +709,6 @@ which is close to zero.
 \subsection*{Q16}
 We also model the three-way model without offset and obtain the following output in \verb|R|
 \begin{verbatim}
-> #Question 16
 > Three.off.without.Offset <- glm(Xij~fj+fi+fk, quasipoisson)
 > exp(Three.off.without.Offset$coefficients[1]) / exp(Three.off$coefficients[1])
 (Intercept) 
@@ -774,7 +758,6 @@ We see that the fitted values coincide for both models.
 We create the dummy variable, construct the model and use \verb|anova| and obtain the following output 
 
 \begin{verbatim}
-> #Question 17
 > i.is.3 <- as.numeric(i==3)
 > Three.off.Dummy3 <- glm(Xij~offset(log(Expo))+fj+i.is.3+fi, quasipoisson)
 > anova(Three.off.Dummy3, test="Chisq")
